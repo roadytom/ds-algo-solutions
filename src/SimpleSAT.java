@@ -77,7 +77,7 @@ class SimpleSAT {
     }
 
     public static void main(String[] args) {
-        System.out.println(Character.('a' + 1));
+//        System.out.println(Character.('a' + 1));
     }
 
 }

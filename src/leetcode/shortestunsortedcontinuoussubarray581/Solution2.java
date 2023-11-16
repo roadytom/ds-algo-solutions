@@ -1,2 +1,5 @@
-package leetcode.shortestunsortedcontinuoussubarray581;public class Solution2 {
+package leetcode.shortestunsortedcontinuoussubarray581;
+
+public class Solution2 {
+    
 }

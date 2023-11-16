@@ -1,14 +1,12 @@
-package codeforces.kotlin
+import java.util.concurrent.locks.Lock
 
 private fun solve() {
-    val n = readInt()
-
 
 }
 
 fun main() {
     repeat(readInt()) {
-
+        println(solve())
     }
 }
 

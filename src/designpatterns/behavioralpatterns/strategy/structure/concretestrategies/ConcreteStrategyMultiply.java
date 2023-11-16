@@ -2,9 +2,9 @@ package designpatterns.behavioralpatterns.strategy.structure.concretestrategies;
 
 import designpatterns.behavioralpatterns.strategy.structure.Strategy;
 
-public class ConcreteStrategyAdd implements Strategy {
+public class ConcreteStrategyMultiply implements Strategy {
     @Override
-    public void execute(int a, int b) {
-
+    public int execute(int a, int b) {
+        return a * b;
     }
 }

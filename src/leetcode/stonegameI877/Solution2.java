@@ -1,4 +1,4 @@
-package leetcode.stonegame877;
+package leetcode.stonegameI877;
 
 import java.util.Arrays;
 

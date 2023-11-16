@@ -1,6 +1,4 @@
-package leetcode.stonegame1140;
-
-import java.util.Arrays;
+package leetcode.stonegameII1140;
 
 public class Solution1 {
     int[] subArraySum;

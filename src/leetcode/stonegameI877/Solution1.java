@@ -1,4 +1,4 @@
-package leetcode.stonegame877;
+package leetcode.stonegameI877;
 
 import java.util.Arrays;
 
@@ -47,6 +47,8 @@ public class Solution1 {
  * 1 2 4 5 6 7 2 5
  * 4 5 6 7 2 5
  * 2 4 5 6 7 2
+ * <p>
+ * 4 5 6 6
  * <p>
  * 4 5 6 6
  * <p>

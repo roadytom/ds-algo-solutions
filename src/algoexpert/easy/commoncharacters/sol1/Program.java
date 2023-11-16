@@ -1,4 +1,4 @@
-package algoexpert.easy.commoncharacters;
+package algoexpert.easy.commoncharacters.sol1;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package algoexpert.medium.sweetandsavory;
+package algoexpert.medium.sweetandsavory.sol1;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.util.*;
 
 /**
- * Time Complexity: O(n * log(n) + m * log(n)) = O(N * log(n or m)
+ * Time Complexity: O(n * log(n) + m * log(n)) = O(N * log(n or m))
  * n and m positive and negative numbers
  * N = n + m all numbers;
  */

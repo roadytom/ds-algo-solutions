@@ -1,5 +1,3 @@
-package codeforces.java;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,45 +12,9 @@ public class Sample {
     public static void main(String[] args) {
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
-        int n = fs.nextInt();
+        int tt = fs.nextInt();
 
         out.close();
-    }
-
-    static class Pair implements Comparable<Pair> {
-        int i, j;
-        long cost;
-
-        public Pair(int i, int j, long cost) {
-            this.i = i;
-            this.j = j;
-            this.cost = cost;
-        }
-
-        public int compareTo(Pair o) {
-            return -Long.compare(cost, o.cost);
-        }
-    }
-
-
-    static class DisjointSet {
-        int[] s;
-
-        public DisjointSet(int n) {
-            Arrays.fill(s = new int[n], -1);
-        }
-
-        public int find(int i) {
-            return s[i] < 0 ? i : (s[i] = find(s[i]));
-        }
-
-        public boolean union(int a, int b) {
-            if ((a = find(a)) == (b = find(b))) return false;
-            if (s[a] == s[b]) s[a]--;
-            if (s[a] <= s[b]) s[b] = a;
-            else s[a] = b;
-            return true;
-        }
     }
 
     static final Random random = new Random();
@@ -144,6 +106,4 @@ public class Sample {
             return Long.parseLong(next());
         }
     }
-
-
 }

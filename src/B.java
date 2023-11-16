@@ -2,18 +2,56 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Random;
-import java.util.StringTokenizer;
+import java.util.*;
 
-public class Sample {
+public class B {
     public static void main(String[] args) {
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
-        int tt = fs.nextInt();
-
+        int n = fs.nextInt(), f = fs.nextInt(), b = fs.nextInt();
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            adj.add(Collections.emptyList());
+        }
+        for (int i = 0; i < n - 1; i++) {
+            int[] sourceToDest = fs.readArray(2);
+            for (int j = 0; j < 2; j++) {
+                List<Integer> neighbours = adj.get(sourceToDest[0]);
+                if (neighbours.size() == 0) {
+                    neighbours = new ArrayList<>();
+                    adj.set(sourceToDest[0], neighbours);
+                }
+                neighbours.add(sourceToDest[1]);
+                int temp = sourceToDest[0];
+                sourceToDest[0] = sourceToDest[1];
+                sourceToDest[1] = temp;
+            }
+        }
+        System.out.println(adj);
+        int count = 0;
+        for (int source = 1; source <= n; source++) {
+            if (source != f)
+                continue;
+            boolean[] visited = new boolean[n + 1];
+            Queue<Integer> queue = new ArrayDeque<>();
+            queue.offer(source);
+            visited[source] = true;
+            boolean affected = false;
+            while (!queue.isEmpty()) {
+                int curr = queue.poll();
+                if (affected || curr == b) {
+                    count++;
+                    affected = true;
+                }
+                for (int dest : adj.get(curr)) {
+                    if (!visited[dest]) {
+                        visited[dest] = true;
+                        queue.offer(dest);
+                    }
+                }
+            }
+        }
+        out.println(n * (n - 1) - count);
         out.close();
     }
 

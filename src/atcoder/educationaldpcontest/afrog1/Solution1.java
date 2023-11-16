@@ -1,20 +1,34 @@
+package atcoder.educationaldpcontest.afrog1;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Random;
-import java.util.StringTokenizer;
+import java.util.*;
 
-public class Sample {
+public class Solution1 {
     public static void main(String[] args) {
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
-        int tt = fs.nextInt();
-
+        final int N = fs.nextInt();
+        int[] h = fs.readArray(N);
+        int ans = solve(N, h);
+        out.println(ans);
         out.close();
+    }
+
+    static int solve(final int n, final int[] h) {
+        int[] dp = new int[n];
+        for (int i = 1; i < n; i++) {
+            int min = Integer.MAX_VALUE;
+            for (int j = i - 1; j >= 0 && j >= i - 2; j--) {
+                int currCost = Math.abs(h[j] - h[i]);
+                min = Math.min(min, currCost + dp[j]);
+            }
+            dp[i] = min;
+        }
+//        System.out.println(Arrays.toString(dp));
+        return dp[n - 1];
     }
 
     static final Random random = new Random();
@@ -77,12 +91,11 @@ public class Sample {
         StringTokenizer st = new StringTokenizer("");
 
         String next() {
-            while (!st.hasMoreTokens())
-                try {
-                    st = new StringTokenizer(br.readLine());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            while (!st.hasMoreTokens()) try {
+                st = new StringTokenizer(br.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return st.nextToken();
         }
 
@@ -106,6 +119,4 @@ public class Sample {
             return Long.parseLong(next());
         }
     }
-
-
 }

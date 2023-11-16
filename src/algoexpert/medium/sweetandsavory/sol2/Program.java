@@ -1,10 +1,11 @@
-package algoexpert.medium.sweetandsavory.sol1;
+package algoexpert.medium.sweetandsavory.sol2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Time Complexity: O(n * log(n) + m * log(n)) = O(N * log(n or m)
@@ -17,38 +18,35 @@ public class Program {
                 .filter(flavor -> flavor < 0)
                 .sorted()
                 .toArray();
-        return Arrays.stream(dishes)
-                .filter(flavor -> flavor > 0)
-                .mapToObj(savory -> findMaxValueToTarget(savory, target, sweetDishes))
-                .filter(Objects::nonNull)
-                .max((a, b) -> a[0] + a[1] - b[0] - b[1])
-                .orElse(new int[]{0, 0});
-    }
-
-    private int[] findMaxValueToTarget(int savory, int target, int[] sweetDishes) {
-        int left = 0;
-        int right = sweetDishes.length - 1;
-        while (left <= right) {
-            int mid = (right + left) / 2;
-            int currentSweet = sweetDishes[mid];
-            if (savory + currentSweet <= target) {
-                left = mid + 1;
+        int[] savoryDishes = Arrays.stream(dishes)
+                .filter(flavor -> flavor >= 0)
+                .sorted()
+                .toArray();
+        int sweetPointer = 0;
+        int savoryPointer = savoryDishes.length - 1;
+        int[] ans = new int[]{0, 0};
+        int bestDiff = Integer.MAX_VALUE;
+        while (sweetPointer < sweetDishes.length && savoryPointer >= 0) {
+            int currDiff = target - sweetDishes[sweetPointer] - savoryDishes[savoryPointer];
+            if (currDiff >= 0) {
+                if (bestDiff > currDiff) {
+                    ans = new int[]{sweetDishes[sweetPointer], savoryDishes[savoryPointer]};
+                    bestDiff = currDiff;
+                }
+                sweetPointer++;
             } else {
-                right = mid - 1;
+                savoryPointer--;
             }
         }
-        if (right == -1) {
-            return null;
-        } else {
-            return new int[]{sweetDishes[left - 1], savory};
-        }
+        return ans;
     }
+
 
     public static void main(String[] args) {
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
         Program program = new Program();
-        out.println(Arrays.toString(program.sweetAndSavory(new int[]{-3, -5, 1, 7}, 0)));
+        out.println(Arrays.toString(program.sweetAndSavory(new int[]{2, 5, -4, -7, 12, 100, -25}, 7)));
         out.close();
     }
 
@@ -112,12 +110,11 @@ public class Program {
         StringTokenizer st = new StringTokenizer("");
 
         String next() {
-            while (!st.hasMoreTokens())
-                try {
-                    st = new StringTokenizer(br.readLine());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            while (!st.hasMoreTokens()) try {
+                st = new StringTokenizer(br.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return st.nextToken();
         }
 

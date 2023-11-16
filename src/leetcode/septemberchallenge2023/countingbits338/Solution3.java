@@ -6,11 +6,20 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class Solution2 {
+/**
+ * the idea is removing the lowest set bit
+ * or (the rightmost non-zero bit)
+ * we will get smaller number
+ * 14 -> 12 = 1110 -> 1100
+ * 9 -> 8 = 1001 -> 1000
+ * so, we will have already the answer for that
+ * so by adding 1 we can get what we want
+ */
+public class Solution3 {
     public int[] countBits(int n) {
         int[] ans = new int[n + 1];
         for (int i = 1; i <= n; i++) {
-            ans[i] = ans[i >> 1] + (i & 1);
+            ans[i] = ans[i & (i - 1)] + 1;
         }
         return ans;
     }
@@ -19,7 +28,7 @@ public class Solution2 {
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
 //        int tt = fs.nextInt();
-        Solution2 solution1 = new Solution2();
+        Solution3 solution1 = new Solution3();
         out.println(Arrays.toString(solution1.countBits(5)));
         out.close();
     }

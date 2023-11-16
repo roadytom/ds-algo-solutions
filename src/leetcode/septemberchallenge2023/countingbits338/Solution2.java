@@ -6,29 +6,26 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class Solution1 {
+/**
+ * dp solution
+ * right shift and get prev answer
+ * check only lowest one bit
+ * O(n)
+ */
+public class Solution2 {
     public int[] countBits(int n) {
         int[] ans = new int[n + 1];
-        for (int i = 0; i <= n; i++) {
-            ans[i] = countBitForSingleNumber(i);
+        for (int i = 1; i <= n; i++) {
+            ans[i] = ans[i >> 1] + (i & 1);
         }
         return ans;
-    }
-
-    public int countBitForSingleNumber(int n) {
-        int count = 0;
-        while (n != 0) {
-            count += (n & 1);
-            n = n >> 1;
-        }
-        return count;
     }
 
     public static void main(String[] args) {
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
 //        int tt = fs.nextInt();
-        Solution1 solution1 = new Solution1();
+        Solution2 solution1 = new Solution2();
         out.println(Arrays.toString(solution1.countBits(5)));
         out.close();
     }

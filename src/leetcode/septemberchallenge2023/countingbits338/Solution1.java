@@ -1,19 +1,39 @@
+package leetcode.septemberchallenge2023.countingbits338;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Random;
-import java.util.StringTokenizer;
+import java.util.*;
 
-public class Sample {
+/**
+ * not efficient just calculating
+ * one by one O(n*sizeof(number))
+ */
+public class Solution1 {
+    public int[] countBits(int n) {
+        int[] ans = new int[n + 1];
+        for (int i = 0; i <= n; i++) {
+            ans[i] = countBitForSingleNumber(i);
+        }
+        return ans;
+    }
+
+    public int countBitForSingleNumber(int n) {
+        int count = 0;
+        while (n != 0) {
+            count += (n & 1);
+            n = n >> 1;
+        }
+        return count;
+    }
+
     public static void main(String[] args) {
         FastScanner fs = new FastScanner();
         PrintWriter out = new PrintWriter(System.out);
-        int tt = fs.nextInt();
-
+//        int tt = fs.nextInt();
+        Solution1 solution1 = new Solution1();
+        out.println(Arrays.toString(solution1.countBits(5)));
         out.close();
     }
 
@@ -106,6 +126,4 @@ public class Sample {
             return Long.parseLong(next());
         }
     }
-
-
 }

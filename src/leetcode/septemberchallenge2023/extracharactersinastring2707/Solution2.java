@@ -3,7 +3,7 @@ package leetcode.septemberchallenge2023.extracharactersinastring2707;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Solution1 {
+public class Solution2 {
     public int minExtraChar(String s, String[] dictionary) {
         Trie head = buildTrie(dictionary);
         int[] dp = new int[s.length()];
@@ -95,7 +95,7 @@ public class Solution1 {
     }
 
     public static void main(String[] args) {
-        Solution1 solution1 = new Solution1();
+        Solution2 solution1 = new Solution2();
         System.out.println(solution1.minExtraChar("sayhelloworld",
                 new String[]{
                         "hello",

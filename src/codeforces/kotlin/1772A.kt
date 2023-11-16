@@ -1,3 +1,5 @@
+package codeforces.kotlin
+
 private fun solve(): Int {
     return readln().split("+")
         .sumOf { it.toInt() }
