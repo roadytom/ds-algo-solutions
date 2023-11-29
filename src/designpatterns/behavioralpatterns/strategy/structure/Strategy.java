@@ -7,5 +7,5 @@ package designpatterns.behavioralpatterns.strategy.structure;
  * strategies
  */
 public interface Strategy {
-    int execute(int a, int b);
+  int execute(int a, int b);
 }

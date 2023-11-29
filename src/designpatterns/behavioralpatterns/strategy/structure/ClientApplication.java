@@ -8,9 +8,9 @@ import designpatterns.behavioralpatterns.strategy.structure.concretestrategies.C
  * in order to make the right choice.
  */
 public class ClientApplication {
-    public static void main(String[] args) {
-        Context context = new Context();
-        // depending on use case we should choose strategy
-        context.setStrategy(new ConcreteStrategyAdd());
-    }
+  public static void main(String[] args) {
+    Context context = new Context();
+    // depending on use case we should choose strategy
+    context.setStrategy(new ConcreteStrategyAdd());
+  }
 }

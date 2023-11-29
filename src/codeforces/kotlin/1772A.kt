@@ -1,14 +1,14 @@
 package codeforces.kotlin
 
 private fun solve(): Int {
-    return readln().split("+")
-        .sumOf { it.toInt() }
+  return readln().split("+")
+    .sumOf { it.toInt() }
 }
 
 fun main() {
-    repeat(readInt()) {
-        println(solve())
-    }
+  repeat(readInt()) {
+    println(solve())
+  }
 }
 
 private fun readInt() = readln().toInt()

@@ -1,13 +1,11 @@
-import java.util.concurrent.locks.Lock
-
 private fun solve() {
 
 }
 
 fun main() {
-    repeat(readInt()) {
-        println(solve())
-    }
+  repeat(readInt()) {
+    println(solve())
+  }
 }
 
 private fun readInt() = readln().toInt()
