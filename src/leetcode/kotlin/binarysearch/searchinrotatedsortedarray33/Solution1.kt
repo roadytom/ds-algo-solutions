@@ -11,8 +11,9 @@ class Solution1 {
       }
       val toTheRight = nums[mid] < target
 
-      if (nums[mid] < )
+//      if (nums[mid] < )
 
     }
+    TODO()
   }
 }
