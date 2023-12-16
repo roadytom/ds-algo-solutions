@@ -2,6 +2,12 @@ package leetcode.kotlin.binarysearch.searchsuggestionssystem1268
 
 import leetcode.kotlin.println
 
+/**
+ * TIME COMPLEXITY:
+ * O(N * log(N) + M * log(N))
+ * N is length of products
+ * M is length of searchWord
+ */
 class Solution1 {
   fun suggestedProducts(products: Array<String>, searchWord: String): List<List<String>> {
     var start = 0
