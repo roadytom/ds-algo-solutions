@@ -3,49 +3,49 @@ package leetcode.kotlin.binarysearch.splitarraylargestsum410
 import leetcode.kotlin.binarysearch.searchsuggestionssystem1268.println
 
 /**
- * RECURSIVE SOLUTION
- * TIME COMPLEXITY: EXPONENTIAL
- * TLE: because in I cannot use dp
- * I got largestSum upto now
- * because of that I cannot use dp
+ * BOTTOM UP DYNAMIC PROGRAMMING
+ * TIME COMPLEXITY:
+ * O(n^2 * k)
  */
-class Solution2 {
+class Solution4 {
   fun splitArray(nums: IntArray, k: Int): Int {
-    return recurrenceRelation(0, 0, k, 0, nums)
-  }
-
-  private fun recurrenceRelation(
-    largestSum: Int, sumUptoNow: Int, k: Int, index: Int, nums: IntArray
-  ): Int {
     if (k == 1) {
-      var currIndex = index
-      var currSum = sumUptoNow
-      while (currIndex < nums.size) {
-        currSum += nums[currIndex]
-        currIndex++
-      }
-      return maxOf(largestSum, currSum)
-    } else if (k - 1 > nums.size - index) {
-      return Int.MAX_VALUE
+      return nums.sum()
     }
-    // CASE 1: continue current array
-    var currSum = sumUptoNow
-    currSum += nums[index]
-    var currLargestSum = maxOf(largestSum, currSum)
-    val continuedLargestSum = recurrenceRelation(currLargestSum, currSum, k, index + 1, nums)
-    // CASE 2: split array
-    currSum = nums[index]
-    currLargestSum = maxOf(largestSum, currSum)
-    val splitLargestSum = recurrenceRelation(currLargestSum, currSum, k - 1, index + 1, nums)
+    val prefixSum = nums.runningFold(0) { acc, curr -> acc + curr }
+    val dp = Array(nums.size + 1) { IntArray(k + 1) { 0 } }
 
-    return minOf(continuedLargestSum, splitLargestSum)
+    for (subArrayCount in 1..k) {
+      for (currIndex in 0..nums.lastIndex) {
+        if (subArrayCount == 1) {
+          dp[currIndex][subArrayCount] = prefixSum.get(currIndex, prefixSum.lastIndex)
+          continue
+        }
+        var min = Int.MAX_VALUE
+        for (i in currIndex..nums.size - subArrayCount) {
+          val firstSplitSum = prefixSum.get(currIndex, i + 1)
+          val largestSplitSum = maxOf(firstSplitSum, dp[i + 1][subArrayCount - 1])
+
+          min = min.coerceAtMost(largestSplitSum)
+          if (firstSplitSum >= min) {
+            break
+          }
+        }
+        dp[currIndex][subArrayCount] = min
+      }
+    }
+    return dp[0][k]
   }
+
+  // Prefix function helper, end exclusive
+  fun List<Int>.get(start: Int, end: Int): Int = this[end] - this[start]
+
 }
 
 fun main() {
-//  Solution2().splitArray(intArrayOf(1, 4, 4), 3).println()
-//  Solution2().splitArray(intArrayOf(1, 2, 3, 4, 5), 2).println()
-  Solution2().splitArray(
+  Solution4().splitArray(intArrayOf(1, 4, 4), 2).println()
+  Solution4().splitArray(intArrayOf(1, 2, 3, 4, 5), 1).println()
+  Solution4().splitArray(
     intArrayOf(
       5334,
       6299,
@@ -389,5 +389,5 @@ fun main() {
       2239
     ), 9
   ).println()
-  Solution2().splitArray(intArrayOf(2, 3, 1, 2, 4, 3), 5).println()
+  Solution4().splitArray(intArrayOf(2, 3, 1, 2, 4, 3), 5).println()
 }

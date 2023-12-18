@@ -3,49 +3,66 @@ package leetcode.kotlin.binarysearch.splitarraylargestsum410
 import leetcode.kotlin.binarysearch.searchsuggestionssystem1268.println
 
 /**
- * RECURSIVE SOLUTION
- * TIME COMPLEXITY: EXPONENTIAL
- * TLE: because in I cannot use dp
- * I got largestSum upto now
- * because of that I cannot use dp
+ * BOTTOM UP DP
+ * TIME COMPLEXITY:
+ * O(n^2 * k)
+ * n size of array, k is subarray count
+ * because we have almost n * k combination
+ * and for each we can go upto n times call to our function
+ * SPACE COMPLEXITY:
+ * O(n * k) size of memo.
+ * ALSO, STACK SPACE in the RECURSION is equal to the
+ * MAX NUMBER OF ACTIVE FUNCTIONS. IT CAN BE UPTO k
+ * because WE call recursively for each k
  */
-class Solution2 {
+class Solution3 {
   fun splitArray(nums: IntArray, k: Int): Int {
-    return recurrenceRelation(0, 0, k, 0, nums)
+    val prefixSum = nums.runningFold(0) { acc, curr -> acc + curr }
+    val memo = Array(nums.size) { IntArray(k + 1) { -1 } }
+    return getMinimumLargestSum(0, k, prefixSum, memo)
   }
 
-  private fun recurrenceRelation(
-    largestSum: Int, sumUptoNow: Int, k: Int, index: Int, nums: IntArray
-  ): Int {
-    if (k == 1) {
-      var currIndex = index
-      var currSum = sumUptoNow
-      while (currIndex < nums.size) {
-        currSum += nums[currIndex]
-        currIndex++
-      }
-      return maxOf(largestSum, currSum)
-    } else if (k - 1 > nums.size - index) {
-      return Int.MAX_VALUE
+  /**
+   * Recurrence relation:
+   * F(currIndex, k) =
+   *  i in currIndex..(lastIndex - k + 1 (we can go upto lastIndex but after this it is not possible)) ->
+   *  min(max(sum(currIndex, i), F(i + i, k - 1))
+   *
+   */
+  private fun getMinimumLargestSum(index: Int, k: Int, prefixSum: List<Int>, memo: Array<IntArray>): Int {
+    val s = memo.size
+    // if we already calculated just return memo value
+    if (memo[index][k] != -1) {
+      return memo[index][k]
     }
-    // CASE 1: continue current array
-    var currSum = sumUptoNow
-    currSum += nums[index]
-    var currLargestSum = maxOf(largestSum, currSum)
-    val continuedLargestSum = recurrenceRelation(currLargestSum, currSum, k, index + 1, nums)
-    // CASE 2: split array
-    currSum = nums[index]
-    currLargestSum = maxOf(largestSum, currSum)
-    val splitLargestSum = recurrenceRelation(currLargestSum, currSum, k - 1, index + 1, nums)
-
-    return minOf(continuedLargestSum, splitLargestSum)
+    // Base case: if k = 1,
+    // I cannot split array more
+    // need to find all sum upto last value
+    // because we don't have other choice
+    if (k == 1) {
+      return (prefixSum.last() - prefixSum[index]).also {
+        memo[index][k] = it
+      }
+    }
+    // Otherwise we use recurrence relation at the top of method
+    return (index..s - k).minOf { i ->
+      maxOf(
+        prefixSum.get(index, i + 1), getMinimumLargestSum(i + 1, k - 1, prefixSum, memo)
+      )
+    }.also {
+      memo[index][k] = it
+    }
   }
+
+  // Prefix function helper, end exclusive
+  fun List<Int>.get(start: Int, end: Int): Int = this[end] - this[start]
+
 }
 
 fun main() {
-//  Solution2().splitArray(intArrayOf(1, 4, 4), 3).println()
-//  Solution2().splitArray(intArrayOf(1, 2, 3, 4, 5), 2).println()
-  Solution2().splitArray(
+  Solution3().splitArray(intArrayOf(1, 4, 4), 3).println()
+  Solution3().splitArray(intArrayOf(1, 2, 3, 4, 5), 2).println()
+  Solution3().splitArray(
     intArrayOf(
       5334,
       6299,
@@ -389,5 +406,5 @@ fun main() {
       2239
     ), 9
   ).println()
-  Solution2().splitArray(intArrayOf(2, 3, 1, 2, 4, 3), 5).println()
+  Solution3().splitArray(intArrayOf(2, 3, 1, 2, 4, 3), 5).println()
 }
