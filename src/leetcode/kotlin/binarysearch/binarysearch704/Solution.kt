@@ -14,6 +14,7 @@ class Solution {
       } else {
         right = mid - 1
       }
+      val a = intArrayOf()
     }
     return -1
   }
