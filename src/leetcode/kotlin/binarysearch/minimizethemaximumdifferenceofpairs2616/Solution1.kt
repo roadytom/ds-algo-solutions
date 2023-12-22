@@ -4,7 +4,7 @@ import leetcode.kotlin.println
 
 /**
  * TIME COMPLEXITY: O(p * n + n * log(n))
- * gives TLE
+ * causes TLE
  */
 class Solution1 {
   /**
