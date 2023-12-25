@@ -1,5 +1,7 @@
 package leetcode.kotlin.queue.implementstackusingqueue225
 
+import leetcode.kotlin.println
+
 /**
  * push: O(1)
  * pop: O(n)
@@ -39,7 +41,7 @@ fun main() {
   var obj = MyStack2()
   obj.push(1)
   obj.push(2)
-  obj.top().
+  obj.top().println()
   var param_3 = obj.top()
   var param_4 = obj.empty()
 }
