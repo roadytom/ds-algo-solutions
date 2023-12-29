@@ -10,12 +10,15 @@ import leetcode.kotlin.binarysearch.searchsuggestionssystem1268.println
  * because of that I cannot use dp
  */
 class Solution2 {
+  data class Key(val largestSum: Int, val sumUptoNow: Int, val k: Int, val index: Int)
+
   fun splitArray(nums: IntArray, k: Int): Int {
-    return recurrenceRelation(0, 0, k, 0, nums)
+    val memo = mutableMapOf<Key, Int>()
+    return recurrenceRelation(0, 0, k, 0, nums, memo)
   }
 
   private fun recurrenceRelation(
-    largestSum: Int, sumUptoNow: Int, k: Int, index: Int, nums: IntArray
+    largestSum: Int, sumUptoNow: Int, k: Int, index: Int, nums: IntArray, memo: MutableMap<Key, Int>
   ): Int {
     if (k == 1) {
       var currIndex = index
@@ -28,17 +31,21 @@ class Solution2 {
     } else if (k - 1 > nums.size - index) {
       return Int.MAX_VALUE
     }
+    val key = Key(largestSum, sumUptoNow, k, index)
+    memo[key]?.let { return it }
     // CASE 1: continue current array
     var currSum = sumUptoNow
     currSum += nums[index]
     var currLargestSum = maxOf(largestSum, currSum)
-    val continuedLargestSum = recurrenceRelation(currLargestSum, currSum, k, index + 1, nums)
+    val continuedLargestSum = recurrenceRelation(currLargestSum, currSum, k, index + 1, nums, memo)
     // CASE 2: split array
     currSum = nums[index]
     currLargestSum = maxOf(largestSum, currSum)
-    val splitLargestSum = recurrenceRelation(currLargestSum, currSum, k - 1, index + 1, nums)
+    val splitLargestSum = recurrenceRelation(currLargestSum, currSum, k - 1, index + 1, nums, memo)
 
-    return minOf(continuedLargestSum, splitLargestSum)
+    return minOf(continuedLargestSum, splitLargestSum).also {
+      memo[key] = it
+    }
   }
 }
 
