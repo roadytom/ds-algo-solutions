@@ -1,3 +1,5 @@
+package leetcode.kotlin.binarysearch.singleelementinsortedarray540
+
 import leetcode.kotlin.binarysearch.searchsuggestionssystem1268.println
 
 /**
