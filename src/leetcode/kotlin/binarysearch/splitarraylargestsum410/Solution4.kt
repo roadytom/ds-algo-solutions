@@ -1,6 +1,7 @@
 package leetcode.kotlin.binarysearch.splitarraylargestsum410
 
-import leetcode.kotlin.binarysearch.searchsuggestionssystem1268.println
+import leetcode.kotlin.println
+
 
 /**
  * BOTTOM UP DYNAMIC PROGRAMMING

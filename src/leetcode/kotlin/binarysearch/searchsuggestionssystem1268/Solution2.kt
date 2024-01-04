@@ -1,5 +1,7 @@
 package leetcode.kotlin.binarysearch.searchsuggestionssystem1268
 
+import leetcode.kotlin.println
+
 
 /**
  * TIME COMPLEXITY: O(N * M + M * K)
@@ -82,7 +84,6 @@ class Solution2 {
 }
 
 
-
 fun main() {
   Solution2().suggestedProducts(
     arrayOf("mobile", "mouse", "moneypot", "monitor", "mousepad"), "mouse"
@@ -94,6 +95,3 @@ fun main() {
     arrayOf("bags", "baggage", "banner", "box", "cloths"), "bags"
   ).println()
 }
-
-fun Any?.println() = println(this)
-

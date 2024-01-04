@@ -1,6 +1,6 @@
 package leetcode.kotlin.daily.december2023.designfoodratingsystem2353
 
-import leetcode.kotlin.binarysearch.searchsuggestionssystem1268.println
+import leetcode.kotlin.println
 import java.util.*
 
 /**

@@ -1,6 +1,7 @@
 package leetcode.kotlin.binarysearch.searchinrotatedsortedarray33
 
-import leetcode.kotlin.binarysearch.searchsuggestionssystem1268.println
+import leetcode.kotlin.println
+
 
 class Solution1 {
   fun search(nums: IntArray, target: Int): Int {

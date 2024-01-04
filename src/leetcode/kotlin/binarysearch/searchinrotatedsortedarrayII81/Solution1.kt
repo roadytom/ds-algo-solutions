@@ -1,6 +1,7 @@
 package leetcode.kotlin.binarysearch.searchinrotatedsortedarrayII81
 
-import leetcode.kotlin.binarysearch.searchsuggestionssystem1268.println
+import leetcode.kotlin.println
+
 
 /**
  * Worst case O(n)

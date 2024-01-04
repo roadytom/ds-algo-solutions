@@ -1,6 +1,7 @@
 package leetcode.kotlin.binarysearch.singleelementinsortedarray540
 
-import leetcode.kotlin.binarysearch.searchsuggestionssystem1268.println
+import leetcode.kotlin.println
+
 
 /**
  * [1,1,2,3,3,4,4,8,8]
