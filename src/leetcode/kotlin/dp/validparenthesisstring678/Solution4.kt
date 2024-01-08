@@ -1,4 +1,4 @@
-package leetcode.kotlin.dp1d.validparenthesisstring678
+package leetcode.kotlin.dp.validparenthesisstring678
 
 import leetcode.kotlin.println
 

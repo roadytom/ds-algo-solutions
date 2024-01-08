@@ -1,4 +1,4 @@
-package leetcode.kotlin.dp1d.climbingstairs70
+package leetcode.kotlin.dp.climbingstairs70
 
 
 class Solution1 {
