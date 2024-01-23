@@ -59,7 +59,20 @@ public class TreeNode {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     TreeNode treeNode = (TreeNode) o;
-    return val == treeNode.val;
+    boolean leftEqual;
+    if (left == null) {
+      leftEqual = treeNode.left == null;
+    } else {
+      leftEqual = left.equals(treeNode.left);
+    }
+    boolean rightEqual;
+    if (right == null) {
+      rightEqual = treeNode.right == null;
+    } else {
+      rightEqual = right.equals(treeNode.right);
+    }
+
+    return val == treeNode.val && leftEqual && rightEqual;
   }
 
   @Override
