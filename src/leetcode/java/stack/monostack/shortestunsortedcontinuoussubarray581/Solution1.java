@@ -1,4 +1,4 @@
-package leetcode.java.withouttopic.shortestunsortedcontinuoussubarray581;
+package leetcode.java.stack.monostack.shortestunsortedcontinuoussubarray581;
 
 import java.util.Arrays;
 
@@ -15,22 +15,22 @@ import java.util.Arrays;
  * Therefore, the code's time complexity is O(nlog(n)).
  */
 public class Solution1 {
-    public int findUnsortedSubarray(int[] nums) {
-        int[] sorted = Arrays.stream(nums).sorted().toArray();
-        int left = 0;
-        while (left < nums.length) {
-            if (sorted[left] != nums[left]) {
-                break;
-            }
-            left++;
-        }
-        int right = nums.length - 1;
-        while (right >= 0) {
-            if (sorted[right] != nums[right]) {
-                break;
-            }
-            right++;
-        }
-        return (right < left) ? 0 : right - left + 1;
+  public int findUnsortedSubarray(int[] nums) {
+    int[] sorted = Arrays.stream(nums).sorted().toArray();
+    int left = 0;
+    while (left < nums.length) {
+      if (sorted[left] != nums[left]) {
+        break;
+      }
+      left++;
     }
+    int right = nums.length - 1;
+    while (right >= 0) {
+      if (sorted[right] != nums[right]) {
+        break;
+      }
+      right++;
+    }
+    return (right < left) ? 0 : right - left + 1;
+  }
 }

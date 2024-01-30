@@ -1,0 +1,7 @@
+{
+ "cmd": ["javac", "$file_name", "&&", "java", "$file_base_name"],
+ "selector": "source.java",
+ "file_regex": "^\\s*File \"(...*)\", line ([0-9]*)",
+ "path": "/Users/mirshod/Library/Java/JavaVirtualMachines/corretto-21.0.1/Contents/Home/bin/",
+ "shell": true
+}
