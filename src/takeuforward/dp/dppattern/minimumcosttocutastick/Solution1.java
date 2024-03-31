@@ -35,7 +35,7 @@ public class Solution1 {
         for (int cut = i; cut <= j; cut++) {
             minCost = Math.min(minCost, newArr[j + 1] - newArr[i - 1] + dp(i, cut - 1, newArr, memo) + dp(cut + 1, j, newArr, memo));
         }
-        System.out.println(STR."\{i} \{j} -> \{minCost}");
+        System.out.println(i + " " + j + " -> " + minCost);
         return memo[i][j] = minCost;
     }
 
