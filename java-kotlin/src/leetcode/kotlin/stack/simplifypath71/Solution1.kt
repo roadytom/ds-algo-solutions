@@ -17,7 +17,7 @@ class Solution1 {
       }
       val curr = builder.toString()
       if (curr != "" && curr != ".") {
-        if (curr == "..") {
+        if (curr == "") {
           stack.removeFirstOrNull()
         } else {
           stack.addFirst(curr)

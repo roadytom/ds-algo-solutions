@@ -7,7 +7,7 @@ class Solution2 {
     val stack = ArrayDeque<String>()
     val arr = path.split("/")
     for (element in arr) {
-      if (element == "..") {
+      if (element == "") {
         stack.removeFirstOrNull()
       } else if (element != "" && element != ".") {
         stack.addFirst(element)
