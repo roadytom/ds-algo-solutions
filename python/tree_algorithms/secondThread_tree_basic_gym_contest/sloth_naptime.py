@@ -1,4 +1,5 @@
 import math
+from math import log2
 import sys
 from collections import deque
 
@@ -76,18 +77,65 @@ MOD = 1000000007
 INF = float("inf")
 
 
-# sys.setrecursionlimit(1000000)
-
-
 def main():
-    N = read_int()
-    edges = read_n_int_lists_0_indexed(N - 1)
-    graph = [[] for _ in range(N)]
-    for a, b in edges:
+    nodes_count = read_int()
+    max_log = int(log2(nodes_count)) + 1
+    graph = [[] for _ in range(nodes_count)]
+    for _ in range(nodes_count - 1):
+        a, b = read_int_list_0_indexed()
         graph[a].append(b)
         graph[b].append(a)
-    Q = read_int()
-    
+
+    def preprocess():
+        stack = deque()
+        stack.append((0, -1))
+        while stack:
+            node, parent = stack.pop()
+            for child in graph[node]:
+                if child == parent:
+                    continue
+                depth[child] = depth[node] + 1
+                up[child][0] = node
+                for j in range(1, max_log):
+                    up[child][j] = up[up[child][j - 1]][j - 1]
+                stack.append((child, node))
+
+    def find_kth_ancestor(node, k):
+        for i in range(max_log):
+            if k & (1 << i) != 0:
+                node = up[node][i]
+        return node
+
+    def find_lca(first_node, second_node):
+        if depth[first_node] > depth[second_node]:
+            first_node, second_node = second_node, first_node
+        k = depth[second_node] - depth[first_node]
+        second_node = find_kth_ancestor(second_node, k)
+        if first_node == second_node:
+            return first_node
+        for j in range(max_log - 1, -1, -1):
+            if up[first_node][j] != up[second_node][j]:
+                first_node = up[first_node][j]
+                second_node = up[second_node][j]
+        return up[first_node][0]
+
+    depth = [0] * nodes_count
+    up = [[0] * max_log for _ in range(nodes_count)]
+    preprocess()
+    query_count = read_int()
+    for _ in range(query_count):
+        a, b, energy = read_int_list()
+        first_node, second_node = a - 1, b - 1
+        lca_node = find_lca(first_node, second_node)
+        length = depth[first_node] + depth[second_node] - 2 * depth[lca_node]
+        if energy >= length:
+            print(second_node + 1)
+            continue
+        length_first_node_lca = depth[first_node] - depth[lca_node]
+        if length_first_node_lca >= energy:
+            print(find_kth_ancestor(first_node, energy) + 1)
+        else:
+            print(find_kth_ancestor(second_node, length - energy) + 1)
 
 
 if __name__ == '__main__':

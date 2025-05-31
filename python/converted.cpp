@@ -4,106 +4,75 @@ using namespace std;
 const int MOD = 1e9 + 7;
 const int INF = INT_MAX;
 
-// Direction arrays
-vector<vector<int>> dire = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-vector<vector<int>> dire8 = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
-string alphabets = "abcdefghijklmnopqrstuvwxyz";
-string ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+vector<vector<int>> graph;
+vector<int> depth;
+vector<vector<int>> up;
+int max_log;
 
-class SegmentTree {
-public:
-    int size;
-    vector<int> tree;
-    unordered_map<int, int> tree_idx_to_val;
-
-    SegmentTree(const vector<int>& arr) {
-        size = arr.size();
-        tree.resize(4 * size, 0);
-        build_tree(0, 0, size - 1, arr);
-    }
-
-    void build_tree(int idx, int seg_left, int seg_right, const vector<int>& arr) {
-        if (seg_left == seg_right) {
-            tree[idx] = 1;
-            tree_idx_to_val[idx] = arr[seg_left];
-            return;
-        }
-        int mid = (seg_left + seg_right) / 2;
-        build_tree(2 * idx + 1, seg_left, mid, arr);
-        build_tree(2 * idx + 2, mid + 1, seg_right, arr);
-        tree[idx] = seg_right - seg_left + 1;
-    }
-
-    int find_kth_idx(int idx, int seg_left, int seg_right, int k) {
-        if (k >= tree[idx]) return -1;
-        if (seg_left == seg_right) return seg_left;
-
-        int mid = (seg_left + seg_right) / 2;
-        if (k < tree[2 * idx + 1]) {
-            return find_kth_idx(2 * idx + 1, seg_left, mid, k);
-        } else {
-            return find_kth_idx(2 * idx + 2, mid + 1, seg_right, k - tree[2 * idx + 1]);
+void preprocess(int n) {
+    stack<pair<int, int>> stk;
+    stk.push({0, -1});
+    while (!stk.empty()) {
+        auto [node, parent] = stk.top();
+        stk.pop();
+        for (int child : graph[node]) {
+            if (child == parent) continue;
+            depth[child] = depth[node] + 1;
+            up[child][0] = node;
+            for (int j = 1; j < max_log; ++j) {
+                up[child][j] = up[up[child][j - 1]][j - 1];
+            }
+            stk.push({child, node});
         }
     }
-
-    int set_zero_and_get_value(int tree_idx, int seg_left, int seg_right, int idx) {
-        if (idx < seg_left || idx > seg_right) throw runtime_error("index out of range");
-        if (seg_left == seg_right) {
-            int val = tree_idx_to_val[tree_idx];
-            tree[tree_idx] = 0;
-            return val;
-        }
-        int mid = (seg_left + seg_right) / 2;
-        int result;
-        if (idx <= mid) {
-            result = set_zero_and_get_value(2 * tree_idx + 1, seg_left, mid, idx);
-        } else {
-            result = set_zero_and_get_value(2 * tree_idx + 2, mid + 1, seg_right, idx);
-        }
-        tree[tree_idx] = tree[2 * tree_idx + 1] + tree[2 * tree_idx + 2];
-        return result;
-    }
-};
-
-// Helper read functions
-int read_int() {
-    int x;
-    cin >> x;
-    return x;
 }
 
-vector<int> read_int_list(int n = -1) {
-    vector<int> result;
-    if (n == -1) {
-        string line;
-        getline(cin >> ws, line);
-        stringstream ss(line);
-        int x;
-        while (ss >> x) result.push_back(x);
-    } else {
-        for (int i = 0; i < n; ++i) {
-            int x;
-            cin >> x;
-            result.push_back(x);
+int find_lca(int a, int b) {
+    if (depth[a] > depth[b]) swap(a, b);
+    int k = depth[b] - depth[a];
+    for (int i = 0; i < max_log; ++i) {
+        if (k & (1 << i)) {
+            b = up[b][i];
         }
     }
-    return result;
+    if (a == b) return a;
+    for (int i = max_log - 1; i >= 0; --i) {
+        if (up[a][i] != up[b][i]) {
+            a = up[a][i];
+            b = up[b][i];
+        }
+    }
+    return up[a][0];
 }
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int n = read_int();
-    vector<int> arr = read_int_list(n);
+    int n, q;
+    cin >> n >> q;
 
-    SegmentTree sg(arr);
+    max_log = log2(n) + 1;
+    graph.assign(n, vector<int>());
+    depth.assign(n, 0);
+    up.assign(n, vector<int>(max_log, 0));
 
-    vector<int> removals = read_int_list();
-    for (int idx : removals) {
-        int kth_idx = sg.find_kth_idx(0, 0, sg.size - 1, idx - 1);
-        int val = sg.set_zero_and_get_value(0, 0, sg.size - 1, kth_idx);
-        cout << val << "\n";
+    for (int i = 0; i < n - 1; ++i) {
+        int a, b;
+        cin >> a >> b;
+        --a; --b;  // 0-indexed
+        graph[a].push_back(b);
+        graph[b].push_back(a);
+    }
+
+    preprocess(n);
+
+    while (q--) {
+        int a, b;
+        cin >> a >> b;
+        --a; --b;
+        int lca_node = find_lca(a, b);
+        cout << depth[a] + depth[b] - 2 * depth[lca_node] << '\n';
     }
 
     return 0;

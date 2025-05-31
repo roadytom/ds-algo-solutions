@@ -1,7 +1,9 @@
-from dp.partitiondp.plates import main
 import io
 import os
 import sys
+
+from python.cse_problem_list.tree_algorithms.distance_queries import main
+
 sys.path.append(os.getcwd())
 
 
