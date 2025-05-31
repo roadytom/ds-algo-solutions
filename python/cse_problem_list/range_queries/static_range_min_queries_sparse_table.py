@@ -1,6 +1,5 @@
-from math import factorial, log2
+import math
 import sys
-from collections import deque
 
 
 def read_words():
@@ -56,11 +55,11 @@ def read_n_word_char_lists(n):
 
 
 def perm(n, r):
-    return factorial(n) // factorial(r)
+    return math.factorial(n) // math.factorial(r)
 
 
 def comb(n, r):
-    return factorial(n) // (factorial(r) * factorial(n - r))
+    return math.factorial(n) // (math.factorial(r) * math.factorial(n - r))
 
 
 def make_list(n, *args, default=0):
@@ -76,50 +75,36 @@ MOD = 1000000007
 INF = float("inf")
 
 
-# sys.setrecursionlimit(1000000)
+class SparseTable:
+    def __init__(self, arr):
+        self.arr_length = len(arr)
+        self.max_log = int(math.log2(self.arr_length)) + 1
+        self.table = [[0] * self.max_log for _ in range(self.arr_length)]
+        self.build_table(arr)
+
+    def build_table(self, arr):
+        for i in range(self.arr_length):
+            self.table[i][0] = arr[i]
+        for j in range(1, self.max_log):
+            for i in range(0, self.arr_length - (1 << j) + 1):
+                self.table[i][j] = min(self.table[i][j - 1], self.table[i + (1 << (j - 1))][j - 1])
+
+    def query(self, left, right):
+        length = right - left + 1
+        max_2_power = len(bin(length)) - 3
+        return min(self.table[left][max_2_power], self.table[right - (1 << max_2_power) + 1][max_2_power])
+
+
+sys.setrecursionlimit(1000000)
 
 
 def main():
-    N = read_int()
-    LOG = int(log2(N)) + 1
-    graph = [[] for _ in range(N)]
-    for node in range(N):
-        _, *adjs = read_int_list()
-        for adj in adjs:
-            graph[node].append(adj)
-    depth = [0] * N
-    up = [[0] * LOG for _ in range(N)]
-    root = 0
-
-    def dfs(node):
-        for child in graph[node]:
-            up[child][0] = node
-            depth[child] = depth[node] + 1
-            for i in range(1, LOG):
-                up[child][i] = up[up[child][i - 1]][i - 1]
-            dfs(child)
-
-    def find_lca(u, v):
-        if depth[u] > depth[v]:
-            return find_lca(v, u)
-        diff = depth[v] - depth[u]
-        for position in range(LOG):
-            if diff & (position << 1) != 0:
-                v = up[v][position]
-        if u == v:
-            return u
-        for i in range(LOG - 1, -1, -1):
-            if up[u][i] != up[v][i]:
-                u = up[u][i]
-                v = up[v][i]
-        return up[i][0]
-
-    dfs(root, -1)
-
-    Q = read_int()
-    for _ in range(Q):
-        u, v = read_int_list()
-        print(find_lca(u, v))
+    n, q = read_int_list()
+    arr = read_int_list()
+    sg = SparseTable(arr)
+    for _ in range(q):
+        left, right = read_int_list()
+        print(sg.query(left - 1, right - 1))
 
 
 if __name__ == '__main__':

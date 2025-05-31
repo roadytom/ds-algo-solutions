@@ -74,51 +74,69 @@ ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MOD = 1000000007
 INF = float("inf")
 
-
 sys.setrecursionlimit(1000000)
+
+
+class BinaryLiftingTree:
+    def __init__(self, nodes_count):
+        self.nodes_count = nodes_count
+        self.max_log = int(log2(nodes_count)) + 1
+        self.up: list[list[int]] = [[-1] * self.max_log for _ in range(nodes_count)]
+        self.depth: list[int] = [0] * nodes_count
+        self.tree: list[list[int]] = [[] for _ in range(nodes_count)]
+
+    def add_edge(self, a: int, b: int):
+        self.tree[a].append(b)
+        self.tree[b].append(a)
+
+    def build(self, root=0):
+        self.dfs(root, -1)
+
+    def dfs(self, node, parent):
+        for child in self.tree[node]:
+            if child == parent:
+                continue
+            self.depth[child] = self.depth[node] + 1
+            self.up[child][0] = node
+            for log in range(1, self.max_log):
+                if self.up[child][log - 1] != -1:
+                    self.up[child][log] = self.up[self.up[child][log - 1]][log - 1]
+            self.dfs(child, node)
+
+    def get_kth_ancestor(self, node, k):
+        for i in range(self.max_log):
+            if k & (1 << i) != 0:
+                node = self.up[node][i]
+                if node == -1:
+                    return -1
+        return node
+
+    def get_lca(self, first_node, second_node):
+        if self.depth[first_node] > self.depth[second_node]:
+            first_node, second_node = second_node, first_node
+        diff = self.depth[second_node] - self.depth[first_node]
+        second_node = self.get_kth_ancestor(second_node, diff)
+        if first_node == second_node:
+            return first_node
+        for log in range(self.max_log - 1, -1, -1):
+            if self.up[first_node][log] != -1 and self.up[first_node][log] != self.up[second_node][log]:
+                first_node = self.up[first_node][log]
+                second_node = self.up[second_node][log]
+        return self.up[first_node][0]
 
 
 def main():
     nodes_count = read_int()
-    max_log = int(log2(nodes_count)) + 1
-    graph: list[list[int]] = [[] for _ in range(nodes_count)]
+    binary_lifting_tree = BinaryLiftingTree(nodes_count)
     for node in range(nodes_count):
         m, *children = read_int_list()
         for i in range(m):
-            graph[node].append(children[i])
-    depth = [0] * nodes_count
-    up = [[0] * max_log for _ in range(nodes_count)]
-    root = 0
-
-    def dfs(curr_node):
-        for child in graph[curr_node]:
-            up[child][0] = curr_node
-            depth[child] = depth[curr_node] + 1
-            for log in range(max_log - 1, 0, - 1):
-                up[child][log] = up[up[child][log - 1]][log - 1]
-            dfs(child)
-
-    def find_lca(first_node, second_node):
-        if depth[first_node] > depth[second_node]:
-            return find_lca(second_node, first_node)
-        diff = depth[second_node] - depth[first_node]
-        for position in range(max_log):
-            if diff & (1 << position) != 0:
-                second_node = up[second_node][position]
-        if first_node == second_node:
-            return first_node
-        for log in range(max_log - 1, -1, -1):
-            if up[first_node][log] != up[second_node][log]:
-                first_node = up[first_node][log]
-                second_node = up[second_node][log]
-        return up[first_node][0]
-
-    dfs(root)
-
+            binary_lifting_tree.add_edge(node, children[i])
+    binary_lifting_tree.build()
     queries_count = read_int()
     for _ in range(queries_count):
         u, v = read_int_list()
-        print(find_lca(u, v))
+        print(binary_lifting_tree.get_lca(u, v))
 
 
 if __name__ == '__main__':
