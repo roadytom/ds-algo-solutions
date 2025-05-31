@@ -13,18 +13,19 @@ def require_built(method):
     return wrapper
 
 
-class BinaryLiftingTree:
+class BinaryLiftingTreeWithMinQuery:
     def __init__(self, nodes_count):
         self.nodes_count = nodes_count
         self.max_log = int(log2(nodes_count)) + 1
         self.up: list[list[int]] = [[-1] * self.max_log for _ in range(nodes_count)]
+        self.up_min: list[list[int]] = [[-1] * self.max_log for _ in range(nodes_count)]
         self.depth: list[int] = [0] * nodes_count
-        self.tree: list[list[int]] = [[] for _ in range(nodes_count)]
+        self.tree: list[list[tuple[int, int]]] = [[] for _ in range(nodes_count)]
         self._built = False
 
-    def add_edge(self, a: int, b: int):
-        self.tree[a].append(b)
-        self.tree[b].append(a)
+    def add_edge(self, a: int, b: int, weight: int):
+        self.tree[a].append((b, weight))
+        self.tree[b].append((a, weight))
         self._built = False
 
     def build(self, root=0, recursive=True):
@@ -34,16 +35,18 @@ class BinaryLiftingTree:
             self.dfs_iterative(root)
         self._built = True
 
-
     def dfs(self, node, parent):
-        for child in self.tree[node]:
+        for child, weight in self.tree[node]:
             if child == parent:
                 continue
             self.depth[child] = self.depth[node] + 1
             self.up[child][0] = node
+            self.up_min[child][0] = weight
             for log in range(1, self.max_log):
                 if self.up[child][log - 1] != -1:
                     self.up[child][log] = self.up[self.up[child][log - 1]][log - 1]
+                    self.up_min[child][log] = min(self.up_min[child][log - 1],
+                                                  self.up_min[self.up[child][log - 1]][log - 1])
             self.dfs(child, node)
 
     def dfs_iterative(self, root):
@@ -51,14 +54,17 @@ class BinaryLiftingTree:
         stack.append((root, -1))
         while stack:
             node, parent = stack.pop()
-            for child in self.tree[node]:
+            for child, weight in self.tree[node]:
                 if child == parent:
                     continue
                 self.depth[child] = self.depth[node] + 1
                 self.up[child][0] = node
+                self.up_min[child][0] = weight
                 for log in range(1, self.max_log):
                     if self.up[child][log - 1] != -1:
                         self.up[child][log] = self.up[self.up[child][log - 1]][log - 1]
+                    self.up_min[child][log] = min(self.up_min[child][log - 1],
+                                                  self.up_min[self.up[child][log - 1]][log - 1])
                 stack.append((child, node))
 
     @require_built
@@ -71,7 +77,18 @@ class BinaryLiftingTree:
         return node
 
     @require_built
-    def get_lca(self, first_node: int, second_node: int):
+    def get_kth_min_ancestor(self, node: int, k):
+        min_ancestor = float("inf")
+        for i in range(self.max_log):
+            if k & (1 << i) != 0:
+                min_ancestor = min(min_ancestor, self.up_min[node][i])
+                node = self.up[node][i]
+                if node == -1:
+                    break
+        return min_ancestor
+
+    @require_built
+    def get_lca(self, first_node, second_node):
         if self.depth[first_node] > self.depth[second_node]:
             first_node, second_node = second_node, first_node
         diff = self.depth[second_node] - self.depth[first_node]
@@ -88,3 +105,9 @@ class BinaryLiftingTree:
     def get_distance(self, first_node, second_node):
         lca_node = self.get_lca(first_node, second_node)
         return self.depth[first_node] + self.depth[second_node] - 2 * self.depth[lca_node]
+
+    @require_built
+    def get_min_in_path(self, first_node, second_node):
+        lca_node = self.get_lca(first_node, second_node)
+        return min(self.get_kth_min_ancestor(first_node, self.depth[first_node] - self.depth[lca_node]),
+                   self.get_kth_min_ancestor(second_node, self.depth[second_node] - self.depth[lca_node]))
