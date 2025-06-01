@@ -74,7 +74,7 @@ ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MOD = 1000000007
 INF = float("inf")
 
-# sys.setrecursionlimit(1000000)
+# sys.setrecursionlimit(10**6)
 
 
 def main():
