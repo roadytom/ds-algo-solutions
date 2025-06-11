@@ -1,9 +1,11 @@
+package codeforces.java.contest_1027;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public class Sample {
+public class A {
     private static final boolean outputToFile = false;
     private static final boolean inputFromFile = false;
     private static FastScanner fs;
@@ -12,7 +14,10 @@ public class Sample {
     public static void main(String[] args) {
         fs = new FastScanner(inputFromFile);
         out = createPrintWriter();
-        solve();
+        int tt = fs.nextInt();
+        while (tt > 0) {
+            solve();
+        }
         out.close();
     }
 

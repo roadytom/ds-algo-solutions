@@ -99,7 +99,6 @@ class SegmentTree:
         if query_left <= seg_left and seg_right <= query_right:
             self.tree[tree_idx] += (seg_right - seg_left + 1) * val
             self.lazy[tree_idx] += val
-
         else:
             self._push(tree_idx, seg_left, seg_right)
             mid = (seg_left + seg_right) // 2

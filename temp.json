@@ -1,0 +1,125 @@
+{
+    "data": {
+        "recentAcSubmissionList": [
+            {
+                "id": "983073298",
+                "title": "Range Sum Query 2D - Immutable",
+                "titleSlug": "range-sum-query-2d-immutable",
+                "timestamp": "1688131409"
+            },
+            {
+                "id": "859215553",
+                "title": "Number of Islands",
+                "titleSlug": "number-of-islands",
+                "timestamp": "1670944871"
+            },
+            {
+                "id": "731874801",
+                "title": "Reverse Bits",
+                "titleSlug": "reverse-bits",
+                "timestamp": "1656261635"
+            },
+            {
+                "id": "731838282",
+                "title": "Group Anagrams",
+                "titleSlug": "group-anagrams",
+                "timestamp": "1656258171"
+            },
+            {
+                "id": "697283359",
+                "title": "Merge Two Sorted Lists",
+                "titleSlug": "merge-two-sorted-lists",
+                "timestamp": "1652251628"
+            },
+            {
+                "id": "692841875",
+                "title": "Meeting Rooms II",
+                "titleSlug": "meeting-rooms-ii",
+                "timestamp": "1651646954"
+            },
+            {
+                "id": "682265940",
+                "title": "Lowest Common Ancestor of a Binary Search Tree",
+                "titleSlug": "lowest-common-ancestor-of-a-binary-search-tree",
+                "timestamp": "1650214799"
+            },
+            {
+                "id": "674849209",
+                "title": "Valid Parentheses",
+                "titleSlug": "valid-parentheses",
+                "timestamp": "1649224845"
+            },
+            {
+                "id": "670315365",
+                "title": "Count of Smaller Numbers After Self",
+                "titleSlug": "count-of-smaller-numbers-after-self",
+                "timestamp": "1648641078"
+            },
+            {
+                "id": "665034788",
+                "title": "Binary Tree Inorder Traversal",
+                "titleSlug": "binary-tree-inorder-traversal",
+                "timestamp": "1647953909"
+            },
+            {
+                "id": "651171392",
+                "title": "Two Sum",
+                "titleSlug": "two-sum",
+                "timestamp": "1646128808"
+            },
+            {
+                "id": "649329021",
+                "title": "Zigzag Conversion",
+                "titleSlug": "zigzag-conversion",
+                "timestamp": "1645897481"
+            },
+            {
+                "id": "648603540",
+                "title": "Two Sum",
+                "titleSlug": "two-sum",
+                "timestamp": "1645782396"
+            },
+            {
+                "id": "566679641",
+                "title": "Maximum Frequency Stack",
+                "titleSlug": "maximum-frequency-stack",
+                "timestamp": "1633503830"
+            },
+            {
+                "id": "527620312",
+                "title": "Maximum Subarray Min-Product",
+                "titleSlug": "maximum-subarray-min-product",
+                "timestamp": "1627144728"
+            },
+            {
+                "id": "520297714",
+                "title": "Minimum Cost to Reach Destination in Time",
+                "titleSlug": "minimum-cost-to-reach-destination-in-time",
+                "timestamp": "1625928304"
+            },
+            {
+                "id": "520294822",
+                "title": "Sum Game",
+                "titleSlug": "sum-game",
+                "timestamp": "1625928039"
+            },
+            {
+                "id": "520291015",
+                "title": "Nearest Exit from Entrance in Maze",
+                "titleSlug": "nearest-exit-from-entrance-in-maze",
+                "timestamp": "1625927723"
+            },
+            {
+                "id": "520287955",
+                "title": "Count Square Sum Triples",
+                "titleSlug": "count-square-sum-triples",
+                "timestamp": "1625927476"
+            },
+            {                "id": "516820738",
+                "title": "Maximum Product Difference Between Two Pairs",
+                "titleSlug": "maximum-product-difference-between-two-pairs",
+                "timestamp": "1625328289"
+            }
+        ]
+    }
+}

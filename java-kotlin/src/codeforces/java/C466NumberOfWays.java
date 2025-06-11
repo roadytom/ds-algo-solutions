@@ -1,9 +1,11 @@
+package codeforces.java;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public class Sample {
+public class C466NumberOfWays {
     private static final boolean outputToFile = false;
     private static final boolean inputFromFile = false;
     private static FastScanner fs;
@@ -17,7 +19,9 @@ public class Sample {
     }
 
     private static void solve() {
-
+        int n = fs.nextInt();
+        int[] arr = fs.readArray(n);
+        
     }
 
     private static PrintWriter createPrintWriter() {
