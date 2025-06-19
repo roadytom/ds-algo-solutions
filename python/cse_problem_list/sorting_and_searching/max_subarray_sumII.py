@@ -1,5 +1,7 @@
 import math
 import sys
+from itertools import accumulate
+from sortedcontainers import SortedList
 
 
 def read_words():
@@ -75,31 +77,22 @@ MOD = 1000000007
 INF = float("inf")
 
 
-# sys.setrecursionlimit(10**6)
-
-def solve(string, txt1, txt2):
-    idx = 0
-    first_found = False
-
-    while idx < len(string):
-        if not first_found and len(string) - idx >= len(txt1) and string[idx:idx + len(txt1)] == txt1:
-            idx += len(txt1)
-            first_found = True
-        if first_found and len(string) - idx >= len(txt2) and string[idx:idx + len(txt2)] == txt2:
-            return True
-        idx += 1
-    return False
+# sys.setrecursionlimit(1000000)
 
 
 def main():
-    string = sys.stdin.readline().rstrip()
-    ans1 = solve(string, "AB", "BA")
-    ans2 = solve(string, "BA", "AB")
-    if ans1 or ans2:
-        print("YES")
-    else:
-        print("NO")
-
+    n, a, b = read_int_list()
+    arr = read_int_list()
+    sorted_list = SortedList()
+    N = len(arr)
+    prefix_sum = list(accumulate(arr, initial=0))
+    max_subarray_sum = float("-inf")
+    for i in range(a, N + 1):
+        sorted_list.add(prefix_sum[i - a])
+        max_subarray_sum = max(max_subarray_sum, prefix_sum[i] - sorted_list[0])
+        if i >= b:
+            sorted_list.remove(prefix_sum[i - b])
+    print(max_subarray_sum)
 
 if __name__ == '__main__':
     main()

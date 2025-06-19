@@ -1,5 +1,6 @@
 import math
 import sys
+from collections import Counter
 
 
 def read_words():
@@ -77,28 +78,35 @@ INF = float("inf")
 
 # sys.setrecursionlimit(10**6)
 
-def solve(string, txt1, txt2):
-    idx = 0
-    first_found = False
-
-    while idx < len(string):
-        if not first_found and len(string) - idx >= len(txt1) and string[idx:idx + len(txt1)] == txt1:
-            idx += len(txt1)
-            first_found = True
-        if first_found and len(string) - idx >= len(txt2) and string[idx:idx + len(txt2)] == txt2:
-            return True
-        idx += 1
-    return False
+def solve():
+    n, m = read_int_list()
+    matrix = []
+    max_num = float("-inf")
+    for i in range(n):
+        matrix.append(read_int_list())
+        max_num = max(max_num, max(matrix[i]))
+    rows = Counter()
+    cols = Counter()
+    maxs_count = 0
+    for i in range(n):
+        for j in range(m):
+            if matrix[i][j] == max_num:
+                rows[i] += 1
+                cols[j] += 1
+                maxs_count += 1
+    for i in range(n):
+        for j in range(m):
+            can_remove_count = rows[i] + cols[j] - (1 if matrix[i][j] == max_num else 0)
+            if can_remove_count == maxs_count:
+                print(max_num - 1)
+                return
+    print(max_num)
 
 
 def main():
-    string = sys.stdin.readline().rstrip()
-    ans1 = solve(string, "AB", "BA")
-    ans2 = solve(string, "BA", "AB")
-    if ans1 or ans2:
-        print("YES")
-    else:
-        print("NO")
+    tt = read_int()
+    for _ in range(tt):
+        solve()
 
 
 if __name__ == '__main__':

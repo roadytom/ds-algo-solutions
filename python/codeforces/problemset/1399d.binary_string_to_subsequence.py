@@ -1,5 +1,6 @@
 import math
 import sys
+from collections import deque
 
 
 def read_words():
@@ -77,28 +78,34 @@ INF = float("inf")
 
 # sys.setrecursionlimit(10**6)
 
-def solve(string, txt1, txt2):
-    idx = 0
-    first_found = False
-
-    while idx < len(string):
-        if not first_found and len(string) - idx >= len(txt1) and string[idx:idx + len(txt1)] == txt1:
-            idx += len(txt1)
-            first_found = True
-        if first_found and len(string) - idx >= len(txt2) and string[idx:idx + len(txt2)] == txt2:
-            return True
-        idx += 1
-    return False
+def solve():
+    n = read_int()
+    s = sys.stdin.readline().strip()
+    ans = [-1] * n
+    pos0, pos1 = deque(), deque()
+    for i in range(n):
+        new_pos = len(pos0) + len(pos1)
+        if s[i] == '0':
+            if not pos1:
+                pos0.append(new_pos)
+            else:
+                new_pos = pos1.pop()
+                pos0.append(new_pos)
+        else:
+            if not pos0:
+                pos1.append(new_pos)
+            else:
+                new_pos = pos0.pop()
+                pos1.append(new_pos)
+        ans[i] = new_pos
+    print(len(pos0) + len(pos1))
+    print(' '.join(str(x + 1) for x in ans))
 
 
 def main():
-    string = sys.stdin.readline().rstrip()
-    ans1 = solve(string, "AB", "BA")
-    ans2 = solve(string, "BA", "AB")
-    if ans1 or ans2:
-        print("YES")
-    else:
-        print("NO")
+    tt = read_int()
+    for _ in range(tt):
+        solve()
 
 
 if __name__ == '__main__':

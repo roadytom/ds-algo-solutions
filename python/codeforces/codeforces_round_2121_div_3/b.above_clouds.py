@@ -1,5 +1,6 @@
 import math
 import sys
+from collections import Counter
 
 
 def read_words():
@@ -77,28 +78,26 @@ INF = float("inf")
 
 # sys.setrecursionlimit(10**6)
 
-def solve(string, txt1, txt2):
-    idx = 0
-    first_found = False
-
-    while idx < len(string):
-        if not first_found and len(string) - idx >= len(txt1) and string[idx:idx + len(txt1)] == txt1:
-            idx += len(txt1)
-            first_found = True
-        if first_found and len(string) - idx >= len(txt2) and string[idx:idx + len(txt2)] == txt2:
-            return True
-        idx += 1
-    return False
-
+def solve():
+    n = read_int()
+    s = sys.stdin.readline().strip()
+    left_counter = Counter(s[0])
+    right_counter = Counter(s)
+    right_counter[s[0]]-= 1
+    # print(right_counter)
+    for i in range(1, len(s) - 1):
+        c = s[i]
+        right_counter[c] -= 1
+        if left_counter[c] > 0 or right_counter[c] > 0:
+            print("YES")
+            return
+        left_counter[c] += 1
+    print("NO")
 
 def main():
-    string = sys.stdin.readline().rstrip()
-    ans1 = solve(string, "AB", "BA")
-    ans2 = solve(string, "BA", "AB")
-    if ans1 or ans2:
-        print("YES")
-    else:
-        print("NO")
+    tt = read_int()
+    for _ in range(tt):
+        solve()
 
 
 if __name__ == '__main__':

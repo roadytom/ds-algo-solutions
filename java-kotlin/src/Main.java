@@ -1,56 +1,119 @@
+import java.io.*;
 import java.util.*;
 
 public class Main {
-    static long[] arr;
-    static long target;
 
-    static Map<String, Long> memo = new HashMap<>();
+    static class SegmentTree {
+        int[] tree;
+        int n;
 
-    public static long dp(int idx, long curr, long group_idx) {
-        String key = idx + "," + curr + "," + group_idx;
-        if (memo.containsKey(key)) return memo.get(key);
-
-        if (idx == arr.length) {
-            // System.out.println(idx + " " + group_idx + " " + (group_idx == 2 && curr == target ? 1 : 0));
-            return 0;
-        }
-        if (group_idx == 2) {
-            return 1;
-        }
-        long ways = 0;
-        ways += dp(idx + 1, curr + arr[idx], group_idx);
-        if (curr + arr[idx] == target) {
-            ways += dp(idx + 1, 0, group_idx + 1);
+        public SegmentTree(int size) {
+            this.n = size;
+            this.tree = new int[4 * n];
         }
 
-        memo.put(key, ways);
-        return ways;
+        public void update(int idx, int addend) {
+            update(0, 0, n - 1, idx, addend);
+        }
+
+        private void update(int treeIdx, int segLeft, int segRight, int idx, int addend) {
+            if (segLeft == segRight) {
+                tree[treeIdx] += addend;
+                return;
+            }
+            int mid = (segLeft + segRight) / 2;
+            if (idx <= mid) {
+                update(2 * treeIdx + 1, segLeft, mid, idx, addend);
+            } else {
+                update(2 * treeIdx + 2, mid + 1, segRight, idx, addend);
+            }
+            tree[treeIdx] = tree[2 * treeIdx + 1] + tree[2 * treeIdx + 2];
+        }
+
+        public int getKthElement(int k) {
+            return getKthElement(0, 0, n - 1, k);
+        }
+
+        private int getKthElement(int treeIdx, int segLeft, int segRight, int k) {
+            if (k >= tree[treeIdx]) return -1;
+            if (segLeft == segRight) return segLeft;
+
+            int leftSum = tree[2 * treeIdx + 1];
+            int mid = (segLeft + segRight) / 2;
+
+            if (k < leftSum) {
+                return getKthElement(2 * treeIdx + 1, segLeft, mid, k);
+            } else {
+                return getKthElement(2 * treeIdx + 2, mid + 1, segRight, k - leftSum);
+            }
+        }
     }
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        long n = readLong(sc);
-        arr = readLongList(sc, n);
-        long total_sum = 0;
-        for (long x : arr) total_sum += x;
-        if (total_sum % 3 != 0) {
-            System.out.println("0");
-            return;
-        }
-        target = total_sum / 3;
+    public static void main(String[] args) throws IOException {
+        FastReader fr = new FastReader();
+        int n = fr.nextInt();
+        int k = fr.nextInt();
+        int[] arr = new int[n];
+        TreeSet<Integer> uniqueVals = new TreeSet<>();
 
-        System.out.println(dp(0, 0, 0));
-    }
-
-    static long readLong(Scanner sc) {
-        return sc.nextLong();
-    }
-
-    static long[] readLongList(Scanner sc, long n) {
-        long[] res = new long[(int)n];
         for (int i = 0; i < n; i++) {
-            res[i] = sc.nextLong();
+            arr[i] = fr.nextInt();
+            uniqueVals.add(arr[i]);
         }
-        return res;
+
+        List<Integer> sortedUnique = new ArrayList<>(uniqueVals);
+        Map<Integer, Integer> valToIdx = new HashMap<>();
+        Map<Integer, Integer> idxToVal = new HashMap<>();
+        for (int i = 0; i < sortedUnique.size(); i++) {
+            valToIdx.put(sortedUnique.get(i), i);
+            idxToVal.put(i, sortedUnique.get(i));
+        }
+
+        SegmentTree segmentTree = new SegmentTree(sortedUnique.size());
+        int left = 0, right = 0;
+        List<Integer> res = new ArrayList<>();
+
+        while (right < n) {
+            segmentTree.update(valToIdx.get(arr[right]), 1);
+            if (right - left + 1 == k) {
+                int mid = (k - 1) / 2;
+                int medianIdx = segmentTree.getKthElement(mid);
+                res.add(idxToVal.get(medianIdx));
+                segmentTree.update(valToIdx.get(arr[left]), -1);
+                left++;
+            }
+            right++;
+        }
+
+        for (int i = 0; i < res.size(); i++) {
+            if (i > 0) System.out.print(" ");
+            System.out.print(res.get(i));
+        }
+        System.out.println();
+    }
+
+    // Fast input reader
+    static class FastReader {
+        BufferedReader br;
+        StringTokenizer st;
+
+        public FastReader() throws FileNotFoundException {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
     }
 }

@@ -75,30 +75,20 @@ MOD = 1000000007
 INF = float("inf")
 
 
-# sys.setrecursionlimit(10**6)
-
-def solve(string, txt1, txt2):
-    idx = 0
-    first_found = False
-
-    while idx < len(string):
-        if not first_found and len(string) - idx >= len(txt1) and string[idx:idx + len(txt1)] == txt1:
-            idx += len(txt1)
-            first_found = True
-        if first_found and len(string) - idx >= len(txt2) and string[idx:idx + len(txt2)] == txt2:
-            return True
-        idx += 1
-    return False
+# sys.setrecursionlimit(1000000)
 
 
 def main():
-    string = sys.stdin.readline().rstrip()
-    ans1 = solve(string, "AB", "BA")
-    ans2 = solve(string, "BA", "AB")
-    if ans1 or ans2:
-        print("YES")
-    else:
-        print("NO")
+    n = read_int()
+    arr = read_int_list()
+    subarray_sum = 0
+    ans = float("-inf")
+    for num in arr:
+        subarray_sum += num
+        ans = max(ans, subarray_sum)
+        if subarray_sum < 0:
+            subarray_sum = 0
+    print(ans)
 
 
 if __name__ == '__main__':

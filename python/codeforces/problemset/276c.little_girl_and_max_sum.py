@@ -77,28 +77,29 @@ INF = float("inf")
 
 # sys.setrecursionlimit(10**6)
 
-def solve(string, txt1, txt2):
-    idx = 0
-    first_found = False
-
-    while idx < len(string):
-        if not first_found and len(string) - idx >= len(txt1) and string[idx:idx + len(txt1)] == txt1:
-            idx += len(txt1)
-            first_found = True
-        if first_found and len(string) - idx >= len(txt2) and string[idx:idx + len(txt2)] == txt2:
-            return True
-        idx += 1
-    return False
-
 
 def main():
-    string = sys.stdin.readline().rstrip()
-    ans1 = solve(string, "AB", "BA")
-    ans2 = solve(string, "BA", "AB")
-    if ans1 or ans2:
-        print("YES")
-    else:
-        print("NO")
+    n, q = read_int_list()
+    arr = read_int_list()
+    used = [0] * n
+    queries = []
+    for _ in range(q):
+        queries.append(read_int_list_0_indexed())
+    for l, r in queries:
+        used[l] += 1
+        if r + 1 < n:
+            used[r + 1] -= 1
+    idx_to_used_count = []
+    prefix_sum = 0
+    for u in used:
+        prefix_sum += u
+        idx_to_used_count.append(prefix_sum)
+    idx_to_used_count.sort(reverse=True)
+    arr.sort(reverse=True)
+    res = 0
+    for c, num in zip(idx_to_used_count, arr):
+        res += c * num
+    print(res)
 
 
 if __name__ == '__main__':

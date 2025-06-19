@@ -77,28 +77,33 @@ INF = float("inf")
 
 # sys.setrecursionlimit(10**6)
 
-def solve(string, txt1, txt2):
-    idx = 0
-    first_found = False
 
-    while idx < len(string):
-        if not first_found and len(string) - idx >= len(txt1) and string[idx:idx + len(txt1)] == txt1:
-            idx += len(txt1)
-            first_found = True
-        if first_found and len(string) - idx >= len(txt2) and string[idx:idx + len(txt2)] == txt2:
-            return True
-        idx += 1
-    return False
+def build_prefix_arr(max_element, k) -> list[int]:
+    prefix_arr = [0] * (max_element + 1)
+    prefix_arr[0] = 0
+    for i in range(1, min(len(prefix_arr), k + 1)):
+        prefix_arr[i] = 1
+    if k <= max_element:
+        prefix_arr[k] += 1
+    for length in range(k + 1, max_element + 1):
+        group = 0
+        if length > k:
+            group = prefix_arr[length - k]
+        prefix_arr[length] = (group + prefix_arr[length - 1]) % MOD
+    return prefix_arr
 
 
 def main():
-    string = sys.stdin.readline().rstrip()
-    ans1 = solve(string, "AB", "BA")
-    ans2 = solve(string, "BA", "AB")
-    if ans1 or ans2:
-        print("YES")
-    else:
-        print("NO")
+    t, k = read_int_list()
+    query = []
+    for i in range(t):
+        query.append(read_int_list())
+    prefix_arr = build_prefix_arr(max(max(q) for q in query), k)
+    prefix_sum = [0] * len(prefix_arr)
+    for i in range(1, len(prefix_arr)):
+        prefix_sum[i] = (prefix_arr[i] + prefix_sum[i - 1]) % MOD
+    for a, b in query:
+        print((prefix_sum[b] - prefix_sum[a - 1] + MOD) % MOD)
 
 
 if __name__ == '__main__':
