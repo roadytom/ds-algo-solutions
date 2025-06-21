@@ -111,7 +111,6 @@ class SegmentTree:
         return do_get_kth_element(0, 0, self.arr_length - 1, k)
 
 
-
 def main():
     n, k = read_int_list()
     arr = read_int_list()
@@ -131,7 +130,7 @@ def main():
             median_idx = segment_tree.get_kth_element(mid)
             # print(median_idx)
             median_val = idx_to_val[median_idx]
-            res.append()
+            res.append(median_val)
             segment_tree.update(val_to_idx[arr[left]], -1)
             left += 1
         right += 1

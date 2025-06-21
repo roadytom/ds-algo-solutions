@@ -2,118 +2,110 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    static final int MOD = 1_000_000_007;
+    static final double INF = Double.POSITIVE_INFINITY;
 
-    static class SegmentTree {
-        int[] tree;
-        int n;
-
-        public SegmentTree(int size) {
-            this.n = size;
-            this.tree = new int[4 * n];
-        }
-
-        public void update(int idx, int addend) {
-            update(0, 0, n - 1, idx, addend);
-        }
-
-        private void update(int treeIdx, int segLeft, int segRight, int idx, int addend) {
-            if (segLeft == segRight) {
-                tree[treeIdx] += addend;
-                return;
-            }
-            int mid = (segLeft + segRight) / 2;
-            if (idx <= mid) {
-                update(2 * treeIdx + 1, segLeft, mid, idx, addend);
-            } else {
-                update(2 * treeIdx + 2, mid + 1, segRight, idx, addend);
-            }
-            tree[treeIdx] = tree[2 * treeIdx + 1] + tree[2 * treeIdx + 2];
-        }
-
-        public int getKthElement(int k) {
-            return getKthElement(0, 0, n - 1, k);
-        }
-
-        private int getKthElement(int treeIdx, int segLeft, int segRight, int k) {
-            if (k >= tree[treeIdx]) return -1;
-            if (segLeft == segRight) return segLeft;
-
-            int leftSum = tree[2 * treeIdx + 1];
-            int mid = (segLeft + segRight) / 2;
-
-            if (k < leftSum) {
-                return getKthElement(2 * treeIdx + 1, segLeft, mid, k);
-            } else {
-                return getKthElement(2 * treeIdx + 2, mid + 1, segRight, k - leftSum);
-            }
-        }
+    static int[] readIntArray(BufferedReader br) throws IOException {
+        return Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
     }
 
     public static void main(String[] args) throws IOException {
-        FastReader fr = new FastReader();
-        int n = fr.nextInt();
-        int k = fr.nextInt();
-        int[] arr = new int[n];
-        TreeSet<Integer> uniqueVals = new TreeSet<>();
+        new Main().run();
+    }
 
-        for (int i = 0; i < n; i++) {
-            arr[i] = fr.nextInt();
-            uniqueVals.add(arr[i]);
+    TreeMap<Integer, Integer> low = new TreeMap<>();
+    TreeMap<Integer, Integer> up = new TreeMap<>();
+    long sumLow = 0;
+    long sumUp = 0;
+    long lowCount = 0;
+    long upCount = 0;
+    int k;
+
+    void insert(int val) {
+        if (low.isEmpty() || low.lastKey() >= val) {
+            incCount(low, val);
+            sumLow += val;
+            lowCount += 1;
+        } else {
+            incCount(up, val);
+            sumUp += val;
+            upCount += 1;
         }
+        balance();
+    }
 
-        List<Integer> sortedUnique = new ArrayList<>(uniqueVals);
-        Map<Integer, Integer> valToIdx = new HashMap<>();
-        Map<Integer, Integer> idxToVal = new HashMap<>();
-        for (int i = 0; i < sortedUnique.size(); i++) {
-            valToIdx.put(sortedUnique.get(i), i);
-            idxToVal.put(i, sortedUnique.get(i));
+    void pop(int val) {
+        if (low.isEmpty()) throw new RuntimeException("empty");
+
+        if (low.containsKey(val) && low.lastKey() >= val) {
+            sumLow -= val;
+            lowCount -= 1;
+            decCountOrRemove(low, val);
+        } else {
+            sumUp -= val;
+            upCount -= 1;
+            decCountOrRemove(up, val);
         }
+        balance();
+    }
 
-        SegmentTree segmentTree = new SegmentTree(sortedUnique.size());
+    void decCountOrRemove(Map<Integer, Integer> map, Integer key) {
+        map.merge(key, -1, (oldVal, newVal) -> (oldVal + newVal == 0) ? null : oldVal + newVal);
+    }
+
+    void incCount(Map<Integer, Integer> map, Integer key) {
+        map.merge(key, 1, Integer::sum);
+    }
+
+    void balance() {
+        while (lowCount - upCount > 1) {
+            var removeVal = low.lastKey();
+            decCountOrRemove(low, removeVal);
+            sumLow -= removeVal;
+            sumUp += removeVal;
+            lowCount -= 1;
+            incCount(up, removeVal);
+            upCount += 1;
+        }
+        while (upCount > lowCount) {
+            int removeVal = up.firstKey();
+            decCountOrRemove(up, removeVal);
+            sumUp -= removeVal;
+            sumLow += removeVal;
+            upCount -= 1;
+            incCount(low, removeVal);
+            lowCount += 1;
+        }
+    }
+
+    void run() throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder out = new StringBuilder();
+
+        int[] nk = readIntArray(br);
+        int n = nk[0];
+        k = nk[1];
+        int[] arr = readIntArray(br);
+
         int left = 0, right = 0;
-        List<Integer> res = new ArrayList<>();
+        List<Long> ans = new ArrayList<>();
 
-        while (right < n) {
-            segmentTree.update(valToIdx.get(arr[right]), 1);
+        while (right < arr.length) {
+            insert(arr[right]);
             if (right - left + 1 == k) {
-                int mid = (k - 1) / 2;
-                int medianIdx = segmentTree.getKthElement(mid);
-                res.add(idxToVal.get(medianIdx));
-                segmentTree.update(valToIdx.get(arr[left]), -1);
+                int med = low.lastKey();
+                long cost = sumUp - (long) med * upCount + (long) med * lowCount - sumLow;
+                ans.add(cost);
+                pop(arr[left]);
                 left++;
             }
             right++;
         }
 
-        for (int i = 0; i < res.size(); i++) {
-            if (i > 0) System.out.print(" ");
-            System.out.print(res.get(i));
+        for (int i = 0; i < ans.size(); i++) {
+            out.append(ans.get(i));
+            if (i < ans.size() - 1) out.append(" ");
         }
-        System.out.println();
-    }
-
-    // Fast input reader
-    static class FastReader {
-        BufferedReader br;
-        StringTokenizer st;
-
-        public FastReader() throws FileNotFoundException {
-            br = new BufferedReader(new InputStreamReader(System.in));
-        }
-
-        String next() {
-            while (st == null || !st.hasMoreElements()) {
-                try {
-                    st = new StringTokenizer(br.readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return st.nextToken();
-        }
-
-        int nextInt() {
-            return Integer.parseInt(next());
-        }
+        System.out.println(out);
     }
 }

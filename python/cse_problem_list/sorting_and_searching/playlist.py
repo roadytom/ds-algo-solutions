@@ -1,8 +1,6 @@
 import math
 import sys
 
-from sortedcontainers import SortedList
-
 
 def read_words():
     return sys.stdin.readline().split()
@@ -81,54 +79,18 @@ INF = float("inf")
 
 
 def main():
-    def insert(val):
-        nonlocal sum_low, sum_up
-        if not low or low[-1] >= val:
-            low.add(val)
-            sum_low += val
-        else:
-            up.add(val)
-            sum_up += val
-        balance()
-
-    def pop(val):
-        nonlocal sum_low, sum_up
-        if not low:
-            raise Exception("empty")
-        if low[-1] >= val:
-            low.remove(val)
-            sum_low -= val
-        else:
-            up.remove(val)
-            sum_up -= val
-        balance()
-
-    def balance():
-        nonlocal sum_low, sum_up
-        if len(low) - len(up) > 1:
-            sum_low -= low[-1]
-            sum_up += low[-1]
-            up.add(low.pop(-1))
-        elif len(up) > len(low):
-            sum_up -= up[0]
-            sum_low += up[0]
-            low.add(up.pop(0))
-
-    n, k = read_int_list()
+    n = read_int()
     arr = read_int_list()
-    low, up = SortedList(), SortedList()
-    sum_up, sum_low = 0, 0
+    max_len = 0
     left, right = 0, 0
-    ans = []
+    prev_idxs = {}
     while right < len(arr):
-        insert(arr[right])
-        if right - left + 1 == k:
-            med = low[-1]
-            ans.append(sum_up - med * len(up) + med * len(low) - sum_low)
-            pop(arr[left])
-            left += 1
+        if arr[right] in prev_idxs:
+            left = max(left, prev_idxs[arr[right]] + 1)
+        max_len = max(max_len, right - left + 1)
+        prev_idxs[arr[right]] = right
         right += 1
-    print(" ".join(map(str, ans)))
+    print(max_len)
 
 
 if __name__ == '__main__':

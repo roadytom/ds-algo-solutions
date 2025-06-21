@@ -1,6 +1,11 @@
 import math
 import sys
+from collections import deque, namedtuple
 from typing import List
+
+# Redirect input/output
+sys.stdin = open("hayfeast.in", "r")
+output_file = open("hayfeast.out", "w")
 
 
 def read_words() -> List[str]:
@@ -64,12 +69,40 @@ MOD = 1000000007
 INF = float("inf")
 
 
-# sys.setrecursionlimit(10**6)
-
-
 def main():
-    pass
+    def insert(idx, val):
+        while max_deque and max_deque[-1].val <= val:
+            max_deque.pop()
+        max_deque.append(IdxVal(idx, val))
+
+    def purge(idx):
+        while max_deque and max_deque[0].idx < idx:
+            max_deque.popleft()
+
+    N, M = read_int_list()
+    F, S = [], []
+    IdxVal = namedtuple("IdxVal", ("idx", "val"))
+    for _ in range(N):
+        f, s = read_int_list()
+        F.append(f)
+        S.append(s)
+    left, right = 0, 0
+    total_flavor = 0
+    max_deque = deque()
+    ans = float("inf")
+    while right < N:
+        total_flavor += F[right]
+        insert(right, S[right])
+        while left <= right and total_flavor - F[left] >= M:
+            total_flavor -= F[left]
+            left += 1
+        purge(left)
+        if total_flavor >= M:
+            ans = min(ans, max_deque[0].val)
+        right += 1
+    print(ans, file=output_file)
 
 
 if __name__ == '__main__':
     main()
+    output_file.close()

@@ -1,51 +1,13 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <set>
+#include <iterator>
+#include <algorithm>
+#include <numeric>
+
 using namespace std;
 
-class SegmentTree {
-public:
-    vector<int> tree;
-    int n;
-
-    SegmentTree(int size) {
-        n = size;
-        tree.resize(4 * n, 0);
-    }
-
-    void update(int idx, int addend) {
-        update(0, 0, n - 1, idx, addend);
-    }
-
-    void update(int treeIdx, int segLeft, int segRight, int idx, int addend) {
-        if (segLeft == segRight) {
-            tree[treeIdx] += addend;
-            return;
-        }
-        int mid = (segLeft + segRight) / 2;
-        if (idx <= mid) {
-            update(2 * treeIdx + 1, segLeft, mid, idx, addend);
-        } else {
-            update(2 * treeIdx + 2, mid + 1, segRight, idx, addend);
-        }
-        tree[treeIdx] = tree[2 * treeIdx + 1] + tree[2 * treeIdx + 2];
-    }
-
-    int getKthElement(int k) {
-        return getKthElement(0, 0, n - 1, k);
-    }
-
-    int getKthElement(int treeIdx, int segLeft, int segRight, int k) {
-        if (k >= tree[treeIdx]) return -1;
-        if (segLeft == segRight) return segLeft;
-
-        int mid = (segLeft + segRight) / 2;
-        int leftCount = tree[2 * treeIdx + 1];
-        if (k < leftCount) {
-            return getKthElement(2 * treeIdx + 1, segLeft, mid, k);
-        } else {
-            return getKthElement(2 * treeIdx + 2, mid + 1, segRight, k - leftCount);
-        }
-    }
-};
+typedef long long ll;
 
 int main() {
     ios::sync_with_stdio(false);
@@ -53,45 +15,81 @@ int main() {
 
     int n, k;
     cin >> n >> k;
-
     vector<int> arr(n);
-    set<int> uniqueVals;
+    for (int &x : arr) cin >> x;
 
-    for (int i = 0; i < n; ++i) {
-        cin >> arr[i];
-        uniqueVals.insert(arr[i]);
-    }
+    multiset<int> low, up; // low = max heap (but we use multiset), up = min heap
+    ll sum_low = 0, sum_up = 0;
 
-    vector<int> sortedUnique(uniqueVals.begin(), uniqueVals.end());
-    unordered_map<int, int> valToIdx;
-    unordered_map<int, int> idxToVal;
+    auto insert = [&](int val) {
+        if (low.empty() || *low.rbegin() >= val) {
+            low.insert(val);
+            sum_low += val;
+        } else {
+            up.insert(val);
+            sum_up += val;
+        }
 
-    for (int i = 0; i < sortedUnique.size(); ++i) {
-        valToIdx[sortedUnique[i]] = i;
-        idxToVal[i] = sortedUnique[i];
-    }
+        // Balance the sets
+        while (low.size() > up.size() + 1) {
+            int moved = *low.rbegin();
+            low.erase(prev(low.end()));
+            sum_low -= moved;
+            up.insert(moved);
+            sum_up += moved;
+        }
+        while (up.size() > low.size()) {
+            int moved = *up.begin();
+            up.erase(up.begin());
+            sum_up -= moved;
+            low.insert(moved);
+            sum_low += moved;
+        }
+    };
 
-    SegmentTree segmentTree(sortedUnique.size());
+    auto erase = [&](int val) {
+        if (low.find(val) != low.end()) {
+            low.erase(low.find(val));
+            sum_low -= val;
+        } else {
+            up.erase(up.find(val));
+            sum_up -= val;
+        }
+
+        // Balance again
+        while (low.size() > up.size() + 1) {
+            int moved = *low.rbegin();
+            low.erase(prev(low.end()));
+            sum_low -= moved;
+            up.insert(moved);
+            sum_up += moved;
+        }
+        while (up.size() > low.size()) {
+            int moved = *up.begin();
+            up.erase(up.begin());
+            sum_up -= moved;
+            low.insert(moved);
+            sum_low += moved;
+        }
+    };
+
+    vector<ll> ans;
     int left = 0, right = 0;
-    vector<int> res;
-
     while (right < n) {
-        segmentTree.update(valToIdx[arr[right]], 1);
+        insert(arr[right]);
         if (right - left + 1 == k) {
-            int mid = (k - 1) / 2;
-            int medianIdx = segmentTree.getKthElement(mid);
-            res.push_back(idxToVal[medianIdx]);
-            segmentTree.update(valToIdx[arr[left]], -1);
+            int med = *low.rbegin();
+            ll cost = sum_up - 1LL * med * up.size() + 1LL * med * low.size() - sum_low;
+            ans.push_back(cost);
+            erase(arr[left]);
             left++;
         }
         right++;
     }
 
-    for (int i = 0; i < res.size(); ++i) {
-        if (i > 0) cout << " ";
-        cout << res[i];
+    for (int i = 0; i < ans.size(); ++i) {
+        cout << ans[i] << (i + 1 == ans.size() ? '\n' : ' ');
     }
-    cout << "\n";
 
     return 0;
 }

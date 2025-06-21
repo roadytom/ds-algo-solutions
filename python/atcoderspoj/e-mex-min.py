@@ -68,7 +68,9 @@ INF = float("inf")
 
 
 def main():
-    pass
+    N, M = read_int_list()
+    arr = read_int_list()
+
 
 
 if __name__ == '__main__':
