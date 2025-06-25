@@ -1,10 +1,6 @@
-import bisect
 import math
 import sys
 from typing import List
-from collections import Counter
-
-from sortedcontainers import SortedSet
 
 
 def read_words() -> List[str]:
@@ -72,26 +68,21 @@ INF = float("inf")
 
 
 def main():
-    N, M = read_int_list()
-    arr = read_int_list()
-    sorted_set = SortedSet()
-    for i in range(len(arr) + 1):
-        sorted_set.add(i)
-    left, right = 0, 0
-    counter = Counter()
-    ans = float("inf")
-    while right < N:
-        counter[arr[right]] += 1
-        sorted_set.discard(arr[right])
-        if right - left + 1 == M:
-            ans = min(ans, sorted_set[0])
-            counter[arr[left]] -= 1
-            if counter[arr[left]] == 0:
-                sorted_set.add(arr[left])
-            left += 1
-        right += 1
-    bisect.bisect
-    print(ans)
+    K, N = read_int_list()
+    citizens = []
+    for _ in range(N):
+        p, s, q, t = read_int_list()
+        citizens.append((p, s, q, t))
+    bridges = [0] * K
+    required_bridge_counts = [0] * (N + 1)
+    for citizen in citizens:
+        p, s, q, t = citizen
+        if p == q:
+            continue
+        required_bridge_counts[min(s, t)] += 1
+        required_bridge_counts[max(s, t) + 1] -= 1
+
+
 
 
 if __name__ == '__main__':

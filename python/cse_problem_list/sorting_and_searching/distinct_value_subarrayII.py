@@ -1,10 +1,7 @@
-import bisect
 import math
 import sys
-from typing import List
 from collections import Counter
-
-from sortedcontainers import SortedSet
+from typing import List
 
 
 def read_words() -> List[str]:
@@ -72,25 +69,21 @@ INF = float("inf")
 
 
 def main():
-    N, M = read_int_list()
-    arr = read_int_list()
-    sorted_set = SortedSet()
-    for i in range(len(arr) + 1):
-        sorted_set.add(i)
+    N, K = read_int_list()
+    ARR = read_int_list()
     left, right = 0, 0
+    ans = 0
     counter = Counter()
-    ans = float("inf")
     while right < N:
-        counter[arr[right]] += 1
-        sorted_set.discard(arr[right])
-        if right - left + 1 == M:
-            ans = min(ans, sorted_set[0])
-            counter[arr[left]] -= 1
-            if counter[arr[left]] == 0:
-                sorted_set.add(arr[left])
+        counter[ARR[right]] += 1
+        while left < right and len(counter) > K:
+            counter[ARR[left]] -= 1
+            if counter[ARR[left]] == 0:
+                del counter[ARR[left]]
             left += 1
+        if len(counter) <= K:
+            ans += right - left + 1
         right += 1
-    bisect.bisect
     print(ans)
 
 
