@@ -2,110 +2,87 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static final int MOD = 1_000_000_007;
-    static final double INF = Double.POSITIVE_INFINITY;
-
-    static int[] readIntArray(BufferedReader br) throws IOException {
-        return Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-    }
+    static int n, m, x, y;
+    static int[][] array;
+    static int[][] count;
+    static Integer[][][] memo;  // Null = uncomputed; Return value can also be null if no solution
 
     public static void main(String[] args) throws IOException {
-        new Main().run();
-    }
-
-    TreeMap<Integer, Integer> low = new TreeMap<>();
-    TreeMap<Integer, Integer> up = new TreeMap<>();
-    long sumLow = 0;
-    long sumUp = 0;
-    long lowCount = 0;
-    long upCount = 0;
-    int k;
-
-    void insert(int val) {
-        if (low.isEmpty() || low.lastKey() >= val) {
-            incCount(low, val);
-            sumLow += val;
-            lowCount += 1;
-        } else {
-            incCount(up, val);
-            sumUp += val;
-            upCount += 1;
-        }
-        balance();
-    }
-
-    void pop(int val) {
-        if (low.isEmpty()) throw new RuntimeException("empty");
-
-        if (low.containsKey(val) && low.lastKey() >= val) {
-            sumLow -= val;
-            lowCount -= 1;
-            decCountOrRemove(low, val);
-        } else {
-            sumUp -= val;
-            upCount -= 1;
-            decCountOrRemove(up, val);
-        }
-        balance();
-    }
-
-    void decCountOrRemove(Map<Integer, Integer> map, Integer key) {
-        map.merge(key, -1, (oldVal, newVal) -> (oldVal + newVal == 0) ? null : oldVal + newVal);
-    }
-
-    void incCount(Map<Integer, Integer> map, Integer key) {
-        map.merge(key, 1, Integer::sum);
-    }
-
-    void balance() {
-        while (lowCount - upCount > 1) {
-            var removeVal = low.lastKey();
-            decCountOrRemove(low, removeVal);
-            sumLow -= removeVal;
-            sumUp += removeVal;
-            lowCount -= 1;
-            incCount(up, removeVal);
-            upCount += 1;
-        }
-        while (upCount > lowCount) {
-            int removeVal = up.firstKey();
-            decCountOrRemove(up, removeVal);
-            sumUp -= removeVal;
-            sumLow += removeVal;
-            upCount -= 1;
-            incCount(low, removeVal);
-            lowCount += 1;
-        }
-    }
-
-    void run() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder out = new StringBuilder();
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        x = Integer.parseInt(st.nextToken());
+        y = Integer.parseInt(st.nextToken());
 
-        int[] nk = readIntArray(br);
-        int n = nk[0];
-        k = nk[1];
-        int[] arr = readIntArray(br);
+        array = new int[n][m];
+        count = new int[m][2];
 
-        int left = 0, right = 0;
-        List<Long> ans = new ArrayList<>();
-
-        while (right < arr.length) {
-            insert(arr[right]);
-            if (right - left + 1 == k) {
-                int med = low.lastKey();
-                long cost = sumUp - (long) med * upCount + (long) med * lowCount - sumLow;
-                ans.add(cost);
-                pop(arr[left]);
-                left++;
+        for (int i = 0; i < n; i++) {
+            String row = br.readLine();
+            for (int j = 0; j < m; j++) {
+                array[i][j] = (row.charAt(j) == '.') ? 0 : 1;
+                count[j][array[i][j]]++;
             }
-            right++;
         }
 
-        for (int i = 0; i < ans.size(); i++) {
-            out.append(ans.get(i));
-            if (i < ans.size() - 1) out.append(" ");
+        memo = new Integer[m][y + 2][2];  // prev can go up to y + 1
+
+        Integer res0 = dp(0, 0, 0);
+        Integer res1 = dp(0, 0, 1);
+
+        Integer result;
+        if (res0 == null && res1 == null) {
+            result = null;  // No valid solution at all
+        } else if (res0 == null) {
+            result = res1;
+        } else if (res1 == null) {
+            result = res0;
+        } else {
+            result = Math.min(res0, res1);
         }
-        System.out.println(out);
+
+        System.out.println(result == null ? "No valid coloring" : result);
+    }
+
+    static Integer dp(int colIdx, int prev, int sign) {
+        if (colIdx == m) {
+            if (prev >= x && prev <= y) return 0;
+            return null;
+        }
+
+        if (memo[colIdx][prev][sign] != null) return memo[colIdx][prev][sign];
+
+        int opposite = (sign + 1) % 2;
+        Integer res = null;
+
+        if (prev == y) {
+            Integer next = dp(colIdx + 1, 1, opposite);
+            if (next != null) {
+                res = next + count[colIdx][opposite];
+            }
+        } else if (prev < x) {
+            Integer next = dp(colIdx + 1, prev + 1, sign);
+            if (next != null) {
+                res = next + count[colIdx][sign];
+            }
+        } else {
+            Integer stay = dp(colIdx + 1, prev + 1, sign);
+            Integer switchColor = dp(colIdx + 1, 1, opposite);
+
+            Integer stayCost = (stay == null) ? null : stay + count[colIdx][sign];
+            Integer switchCost = (switchColor == null) ? null : switchColor + count[colIdx][opposite];
+
+            if (stayCost != null && switchCost != null) {
+                res = Math.min(stayCost, switchCost);
+            } else if (stayCost != null) {
+                res = stayCost;
+            } else if (switchCost != null) {
+                res = switchCost;
+            }
+        }
+
+        memo[colIdx][prev][sign] = res;
+        return res;
     }
 }

@@ -1,51 +1,90 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MOD = 1000000007;
-const double INF = 1e18;
+const int MOD = 1e9 + 7;
+const int INF = INT_MAX;
 
-// Read utility functions
-vector<int> read_int_list(int n) {
-    vector<int> result(n);
-    for (int i = 0; i < n; ++i) {
-        cin >> result[i];
+void dfs(int node, vector<vector<int>> &graph, vector<bool> &visited, deque<int> &order) {
+    visited[node] = true;
+    for (int adj : graph[node]) {
+        if (!visited[adj])
+            dfs(adj, graph, visited, order);
     }
-    return result;
+    order.push_front(node);
+}
+
+void dfs2(int node, vector<vector<int>> &rev_graph, vector<bool> &visited, vector<int> &scc) {
+    visited[node] = true;
+    scc.push_back(node);
+    for (int adj : rev_graph[node]) {
+        if (!visited[adj])
+            dfs2(adj, rev_graph, visited, scc);
+    }
 }
 
 int main() {
     ios::sync_with_stdio(false);
-    cin.tie(0);
+    cin.tie(nullptr);
 
-    int N, M;
-    cin >> N >> M;
-    vector<int> arr = read_int_list(N);
-
-    set<int> sorted_set;
-    for (int i = 0; i <= arr.size(); ++i) {
-        sorted_set.insert(i);
+    int n;
+    cin >> n;
+    vector<int> costs(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> costs[i];
     }
 
-    int left = 0, right = 0;
-    unordered_map<int, int> counter;
-    int ans = INT_MAX;
+    int m;
+    cin >> m;
+    vector<vector<int>> graph(n + 1), rev_graph(n + 1);
 
-    while (right < N) {
-        counter[arr[right]]++;
-        sorted_set.erase(arr[right]);
+    for (int i = 0; i < m; ++i) {
+        int a, b;
+        cin >> a >> b;
+        graph[a].push_back(b);
+        rev_graph[b].push_back(a);
+    }
 
-        if (right - left + 1 == M) {
-            ans = min(ans, *sorted_set.begin());
-
-            counter[arr[left]]--;
-            if (counter[arr[left]] == 0) {
-                sorted_set.insert(arr[left]);
-            }
-            left++;
+    // Step 1: Topological sort
+    deque<int> topo_order;
+    vector<bool> visited(n + 1, false);
+    for (int i = 1; i <= n; ++i) {
+        if (!visited[i]) {
+            dfs(i, graph, visited, topo_order);
         }
-        right++;
     }
 
-    cout << ans << '\n';
+    // Step 2: Find SCCs on reversed graph
+    visited.assign(n + 1, false);
+    vector<vector<int>> sccs;
+    for (int node : topo_order) {
+        if (!visited[node]) {
+            vector<int> scc;
+            dfs2(node, rev_graph, visited, scc);
+            sccs.push_back(scc);
+        }
+    }
+
+    // Step 3: For each SCC, compute min cost and count
+    long long total_min_sum = 0;
+    long long ways = 1;
+
+    for (const auto &scc : sccs) {
+        int min_cost = INF;
+        for (int node : scc) {
+            min_cost = min(min_cost, costs[node - 1]); // node is 1-indexed
+        }
+
+        int count = 0;
+        for (int node : scc) {
+            if (costs[node - 1] == min_cost)
+                ++count;
+        }
+
+        total_min_sum += min_cost;
+        ways = (ways * count) % MOD;
+    }
+
+    cout << total_min_sum << " " << ways << "\n";
+
     return 0;
 }
