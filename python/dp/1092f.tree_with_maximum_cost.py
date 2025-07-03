@@ -65,27 +65,28 @@ INF = float("inf")
 
 
 # sys.setrecursionlimit(10**6)
-def f(a, b):
-    ans = 0
-    while a != 0 and b != 0:
-        ans += int(a % 10 == b % 10)
-        a //= 10
-        b //= 10
-    return ans
-
-
-def solve():
-    l, r = read_int_list()
-    mn = float("inf")
-    for x in range(l, r + 1):
-        mn = min(mn, f(l, x) + f(x, r))
-    print(mn)
 
 
 def main():
-    T = read_int()
-    for _ in range(T):
-        solve()
+    vertices_count = read_int()
+    values = read_int_list()
+    tree = [[] for _ in range(vertices_count)]
+    for _ in range(vertices_count - 1):
+        a, b = read_int_list()
+        tree[a - 1].append(b - 1)
+        tree[b - 1].append(a - 1)
+    dists = [0] * vertices_count
+    parents = [-1] * vertices_count
+
+    def dfs(node, parent, dist):
+        parents[node] = parent
+        dists[node] = dist
+        for adj in tree[node]:
+            if adj != parent:
+                dfs(adj, node, dist + 1)
+
+    dfs(0, -1, 0)
+    for node in range(vertices_count):
 
 
 if __name__ == '__main__':

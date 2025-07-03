@@ -19,4 +19,4 @@ class Node:
 class Solution:
     def connect(self, root: 'Node') -> 'Node':
 
-        # @lc code=end
+# @lc code=end

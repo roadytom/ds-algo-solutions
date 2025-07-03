@@ -65,21 +65,37 @@ INF = float("inf")
 
 
 # sys.setrecursionlimit(10**6)
-def f(a, b):
-    ans = 0
-    while a != 0 and b != 0:
-        ans += int(a % 10 == b % 10)
-        a //= 10
-        b //= 10
-    return ans
+def find_max_pow(a, n):
+    if a == 1:
+        return float("inf")
+    power = 1
+    max_power = 0
+    while power <= n:
+        power = power * a
+        max_power += 1
+        # print(power)
+    return max_power
 
 
 def solve():
-    l, r = read_int_list()
-    mn = float("inf")
-    for x in range(l, r + 1):
-        mn = min(mn, f(l, x) + f(x, r))
-    print(mn)
+    n, a, b = read_int_list()
+    max_power = find_max_pow(a, n)
+    n = n % b
+    power = 1
+    seen = {1}
+    count = 0
+    while count < max_power:
+        # print(n, power)
+        if n == power:
+            # print(count)
+            print("YES")
+            return
+        power = (power * a) % b
+        count += 1
+        if power in seen:
+            break
+        seen.add(power)
+    print("NO")
 
 
 def main():

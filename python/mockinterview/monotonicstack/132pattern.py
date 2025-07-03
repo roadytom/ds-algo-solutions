@@ -22,13 +22,11 @@ def is_triplet(data):
         left_minimum = min(left_minimum, data[j])
     return False
 
-print(is_triplet([3,1,4,2]))
 
+print(is_triplet([3, 1, 4, 2]))
 
 a = SortedList()
 a.add(1)
 a.add(2)
 a.add(4)
 print(a.bisect_left(3))
-
-

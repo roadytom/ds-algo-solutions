@@ -10,6 +10,7 @@ class Solution:
     def minimumEffortPath(self, heights: List[List[int]]) -> int:
         def valid(row, col):
             return 0 <= row < row_length and 0 <= col < col_length
+
         row_length, col_length = len(heights), len(heights[0])
         distances = [[float("inf")] * col_length for _ in range(row_length)]
         distances[0][0] = 0

@@ -86,6 +86,7 @@ def solve():
         a[:right + 1] = a[:right + 1][::-1]
     print(operations_count, " ".join(map(str, prefixes)))
 
+
 def solve_optimized():
     n = read_int()
     a = list(map(int, read_line()))
@@ -103,6 +104,7 @@ def solve_optimized():
             a[left] = a[left] ^ 1
         a[:right + 1] = a[:right + 1][::-1]
     print(operations_count, " ".join(map(str, prefixes)))
+
 
 def main():
     T = read_int()

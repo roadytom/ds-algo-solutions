@@ -78,6 +78,7 @@ ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MOD = 1000000007
 INF = float("inf")
 
+
 # sys.setrecursionlimit(1000000)
 
 
@@ -103,13 +104,13 @@ class SegmentTree2D:
                 self.tree[row_idx][col_idx] = grid[left_row][left_col]
             else:
                 self.tree[row_idx][col_idx] = self.tree[2 * row_idx + 1][col_idx] \
-                    + self.tree[2 * row_idx + 2][col_idx]
+                                              + self.tree[2 * row_idx + 2][col_idx]
         else:
             mid = (left_col + right_col) // 2
             self.build_col(row_idx, left_row, right_row, 2 * col_idx + 1, left_col, mid, grid)
             self.build_col(row_idx, left_row, right_row, 2 * col_idx + 2, mid + 1, right_col, grid)
             self.tree[row_idx][col_idx] = self.tree[row_idx][2 * col_idx + 1] + \
-                self.tree[row_idx][2 * col_idx + 2]
+                                          self.tree[row_idx][2 * col_idx + 2]
 
     def query_row(self, row_idx, left_row, right_row, q_left_row, q_right_row, q_left_col, q_right_col):
         if q_right_row < left_row or q_left_row > right_row:
@@ -118,7 +119,8 @@ class SegmentTree2D:
             return self.query_col(row_idx, 0, 0, self.col_length - 1, q_left_col, q_right_col)
         mid = (left_row + right_row) // 2
         left_res = self.query_row(2 * row_idx + 1, left_row, mid, q_left_row, q_right_row, q_left_col, q_right_col)
-        right_res = self.query_row(2 * row_idx + 2, mid + 1, right_row, q_left_row, q_right_row, q_left_col, q_right_col)
+        right_res = self.query_row(2 * row_idx + 2, mid + 1, right_row, q_left_row, q_right_row, q_left_col,
+                                   q_right_col)
         return left_res + right_res
 
     def query_col(self, row_idx, col_idx, left_col, right_col, q_left_col, q_right_col):

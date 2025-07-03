@@ -74,6 +74,7 @@ ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MOD = 1000000007
 INF = float("inf")
 
+
 # sys.setrecursionlimit(1000000)
 
 
@@ -99,6 +100,7 @@ def main():
         skip = dp(row + 1, 0, p)
         memo[row][col][p] = max(take, skip)
         return memo[row][col][p]
+
     a = dp(0, 0, 0)
     return a
 

@@ -82,6 +82,7 @@ def solve():
     #         return
     # print("BOB")
 
+
 def main():
     T = read_int()
     for _ in range(T):

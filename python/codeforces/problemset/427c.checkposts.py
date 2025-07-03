@@ -64,8 +64,9 @@ ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MOD = 1000000007
 INF = float("inf")
 
+sys.setrecursionlimit(10 ** 5)
 
-sys.setrecursionlimit(10**5)
+
 def main():
     n = read_int()
     costs = read_int_list()
@@ -121,11 +122,13 @@ def main():
             if costs[node - 1] == mins[i]:
                 count += 1
         mins_count[i] = count
+
     def find_ways_count(mins_count):
         prod = 1
         for min_count in mins_count:
             prod = (prod * min_count) % MOD
         return prod
+
     print(sum(mins), find_ways_count(mins_count))
 
 

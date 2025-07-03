@@ -6,7 +6,6 @@ from python.cse_problem_list.tree_algorithms.distance_queries import main
 
 sys.path.append(os.getcwd())
 
-
 if __name__ == '__main__':
     # print("Current Working Directory:", os.getcwd())
 

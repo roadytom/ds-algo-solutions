@@ -149,7 +149,6 @@ class SegmentTreeCustom:
         return self.query_lazy(0, 0, self.arr_length - 1, 0, self.arr_length, flag)
 
 
-
 # sys.setrecursionlimit(10**6)
 
 def solve():

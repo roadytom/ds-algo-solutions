@@ -76,7 +76,7 @@ INF = float("inf")
 
 # sys.setrecursionlimit(1000000)
 
-sieve = [True] * (3*(10*6))
+sieve = [True] * (3 * (10 * 6))
 prime_nums = []
 for p in range(2, i * i <= len(sieve)):
     if sieve[p]:
@@ -87,8 +87,9 @@ for p in range(2, i * i <= len(sieve)):
 
 def solve():
     N, K = read_int_list()
-    ans = prime_nums[N-1]
+    ans = prime_nums[N - 1]
     ans.append()
+
 
 def main():
     T = read_int()

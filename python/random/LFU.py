@@ -1,5 +1,6 @@
-from sortedcontainers import SortedList
 from collections import namedtuple
+
+from sortedcontainers import SortedList
 
 
 class LFUCache:

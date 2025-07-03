@@ -44,5 +44,6 @@ class Solution:
                 left = mid + 1
         return answer
 
+
 sol = Solution()
-print(sol.smallestRange([[4,10,15,24,26],[0,9,12,20],[5,18,22,30]]))
+print(sol.smallestRange([[4, 10, 15, 24, 26], [0, 9, 12, 20], [5, 18, 22, 30]]))

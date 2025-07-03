@@ -4,7 +4,6 @@ from functools import cache
 from typing import List
 
 
-
 def read_words() -> List[str]:
     return sys.stdin.readline().split()
 
@@ -65,8 +64,7 @@ ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MOD = 1000000007
 INF = float("inf")
 
-
-sys.setrecursionlimit(10**6)
+sys.setrecursionlimit(10 ** 6)
 
 
 def main():
@@ -80,6 +78,7 @@ def main():
     for row in range(n):
         for col in range(m):
             count[col][array[row][col]] += 1
+
     # print(count)
     @cache
     def dp(col_idx, prev, sign):

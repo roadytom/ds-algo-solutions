@@ -87,7 +87,8 @@ def investigate_up_to_num(num, k):
         max_digit = int(num_str[idx]) if tight == 1 else 9
         count = 0
         for digit in range(max_digit + 1):
-            count += dp(idx + 1, (digits_sum_mod_by_k + digit) % k, (remainder * 10 + digit) % k, tight and digit == max_digit)
+            count += dp(idx + 1, (digits_sum_mod_by_k + digit) % k, (remainder * 10 + digit) % k,
+                        tight and digit == max_digit)
         memo[idx][digits_sum_mod_by_k][remainder][tight] = count
         return count
 

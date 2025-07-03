@@ -121,6 +121,7 @@ class SegmentTree:
                 do_update(2 * tree_idx + 2, mid + 1, seg_right, idx, new_val)
             self.tree[tree_idx] = min(
                 self.tree[2 * tree_idx + 1], self.tree[2 * tree_idx + 2])
+
         do_update(0, 0, self.arr_length - 1, idx, new_val)
 
 

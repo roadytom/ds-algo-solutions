@@ -66,9 +66,8 @@ class MyCalendarThree:
         self.lazy[tree_idx] = 0
 
     def book(self, start_time: int, end_time: int) -> int:
-        self.update_lazy(0, 0, 10**9, start_time, end_time - 1, 1)
-        return self.query_lazy(0, 0, 10**9, 0, 10**9)
-
+        self.update_lazy(0, 0, 10 ** 9, start_time, end_time - 1, 1)
+        return self.query_lazy(0, 0, 10 ** 9, 0, 10 ** 9)
 
 # Your MyCalendarThree object will be instantiated and called as such:
 # obj = MyCalendarThree()

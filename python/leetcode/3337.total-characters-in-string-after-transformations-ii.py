@@ -25,11 +25,13 @@ class Matrix:
                     result.matrix[i][j] = (result.matrix[i][j] + self.matrix[i][k] + other[k][j]) % MOD
         return result
 
+
 def I():
     identity_matrix = Matrix()
     for i in range(L):
         identity_matrix.matrix[i][i] = 1
     return identity_matrix
+
 
 def fast_pow(x, y):
     if y == 0:
@@ -39,6 +41,7 @@ def fast_pow(x, y):
         return half * half
     else:
         return half * half * x
+
 
 class Solution:
     def lengthAfterTransformations(self, s: str, t: int, nums: List[int]) -> int:

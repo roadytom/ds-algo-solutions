@@ -1,5 +1,5 @@
-import sys
 import math
+import sys
 
 
 def read_words():
@@ -74,6 +74,7 @@ ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MOD = 1000000007
 INF = float("inf")
 
+
 # sys.setrecursionlimit(1000000)
 
 
@@ -87,8 +88,8 @@ def main():
 
     n, x = read_int_list()
     arr = read_int_list()
-    left_arr = arr[:n//2]
-    right_arr = arr[n//2:]
+    left_arr = arr[:n // 2]
+    right_arr = arr[n // 2:]
     left_subset_sums = []
     fill_subset_sums(0, 0, left_arr, left_subset_sums)
     right_subset_sums = []
@@ -116,6 +117,7 @@ def main():
         else:
             left += 1
     print(ways)
+
 
 if __name__ == '__main__':
     main()

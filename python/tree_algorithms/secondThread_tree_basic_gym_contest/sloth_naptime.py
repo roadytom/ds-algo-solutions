@@ -109,7 +109,6 @@ class BinaryLiftingTree:
             self.dfs_iterative(root)
         self._built = True
 
-
     def dfs(self, node, parent):
         for child in self.tree[node]:
             if child == parent:

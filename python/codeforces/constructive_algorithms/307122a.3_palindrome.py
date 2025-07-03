@@ -65,27 +65,23 @@ INF = float("inf")
 
 
 # sys.setrecursionlimit(10**6)
-def f(a, b):
-    ans = 0
-    while a != 0 and b != 0:
-        ans += int(a % 10 == b % 10)
-        a //= 10
-        b //= 10
-    return ans
-
-
-def solve():
-    l, r = read_int_list()
-    mn = float("inf")
-    for x in range(l, r + 1):
-        mn = min(mn, f(l, x) + f(x, r))
-    print(mn)
 
 
 def main():
-    T = read_int()
-    for _ in range(T):
-        solve()
+    n = read_int()
+    if n == 1:
+        print("a")
+        return
+    elif n == 2:
+        print("aa")
+        return
+    ans = ["a", "a"]
+    for i in range(2, n):
+        if ans[i - 2] == 'a':
+            ans.append('b')
+        else:
+            ans.append('a')
+    print("".join(ans))
 
 
 if __name__ == '__main__':

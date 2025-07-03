@@ -1,5 +1,4 @@
 class Solution:
-
     # Three static flags to keep track of post-order traversal.
 
     # Both left and right traversal pending for a node.

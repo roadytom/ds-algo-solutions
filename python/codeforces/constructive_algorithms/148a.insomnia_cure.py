@@ -1,5 +1,7 @@
 import math
 import sys
+from functools import reduce
+from itertools import combinations
 from typing import List
 
 
@@ -65,27 +67,57 @@ INF = float("inf")
 
 
 # sys.setrecursionlimit(10**6)
-def f(a, b):
-    ans = 0
-    while a != 0 and b != 0:
-        ans += int(a % 10 == b % 10)
-        a //= 10
-        b //= 10
-    return ans
+
+def gcd(a, b):
+    if a > b:
+        return gcd(b, a)
+    if a == 0:
+        return b
+    return gcd(b % a, a)
 
 
-def solve():
-    l, r = read_int_list()
-    mn = float("inf")
-    for x in range(l, r + 1):
-        mn = min(mn, f(l, x) + f(x, r))
-    print(mn)
+def lcm(*args):
+    return reduce(lambda a, b: a * b // gcd(a, b), args)
 
 
 def main():
-    T = read_int()
-    for _ in range(T):
-        solve()
+    arr = []
+    for _ in range(4):
+        arr.append(read_int())
+    d = read_int()
+    if any(x == 1 for x in arr):
+        print(d)
+        return
+    arr = list(set(arr))
+    sign = 1
+    total = 0
+    for size in range(1, len(arr) + 1):
+        for nums in combinations(arr, size):
+            total += sign * (d // lcm(*nums))
+        sign = sign * -1
+    print(total)
+
+
+def count_divisible(d, divisors):
+    total = 0
+    n = len(divisors)
+
+    # For all subsets of divisors (1 to all)
+    ans = ""
+    for mask in range(1, 1 << n):
+        selected = [divisors[i] for i in range(n) if (mask >> i) & 1]
+        l = lcm(*selected)
+        count = d // l
+        print(selected, l, count)
+        # Inclusion-exclusion logic
+        if bin(mask).count("1") % 2 == 1:
+            ans = ans + f"{count}+"
+            total += count
+        else:
+            ans = ans + f"-{count}+"
+            total -= count
+    print(ans)
+    return total
 
 
 if __name__ == '__main__':

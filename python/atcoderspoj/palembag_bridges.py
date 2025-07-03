@@ -83,7 +83,5 @@ def main():
         required_bridge_counts[max(s, t) + 1] -= 1
 
 
-
-
 if __name__ == '__main__':
     main()

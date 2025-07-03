@@ -1,5 +1,6 @@
 import math
 import sys
+from collections import Counter
 from typing import List
 
 
@@ -65,21 +66,15 @@ INF = float("inf")
 
 
 # sys.setrecursionlimit(10**6)
-def f(a, b):
-    ans = 0
-    while a != 0 and b != 0:
-        ans += int(a % 10 == b % 10)
-        a //= 10
-        b //= 10
-    return ans
-
-
 def solve():
-    l, r = read_int_list()
-    mn = float("inf")
-    for x in range(l, r + 1):
-        mn = min(mn, f(l, x) + f(x, r))
-    print(mn)
+    n = read_int()
+    arr = read_int_list()
+    counter = Counter(arr)
+    max_freq = max(counter.values())
+    if max_freq >= (n + 1) // 2:
+        print(2 * max_freq - n)
+    else:
+        print(n % 2)
 
 
 def main():

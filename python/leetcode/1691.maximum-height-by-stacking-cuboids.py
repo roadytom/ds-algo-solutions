@@ -17,8 +17,10 @@ class Solution:
                 if curr > prev:
                     return False
             return True
+
         cuboids = list(map(lambda x: list(sorted(x)), cuboids))
         cuboids.sort(reverse=True)
+
         def dp(idx, prev_idx):
             if idx == len(cuboids):
                 return 0

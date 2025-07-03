@@ -83,7 +83,7 @@ def solve():
     s = sys.stdin.readline().strip()
     left_counter = Counter(s[0])
     right_counter = Counter(s)
-    right_counter[s[0]]-= 1
+    right_counter[s[0]] -= 1
     # print(right_counter)
     for i in range(1, len(s) - 1):
         c = s[i]
@@ -93,6 +93,7 @@ def solve():
             return
         left_counter[c] += 1
     print("NO")
+
 
 def main():
     tt = read_int()

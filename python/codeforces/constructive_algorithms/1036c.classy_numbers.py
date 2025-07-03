@@ -1,5 +1,6 @@
 import math
 import sys
+from functools import cache
 from typing import List
 
 
@@ -65,21 +66,30 @@ INF = float("inf")
 
 
 # sys.setrecursionlimit(10**6)
-def f(a, b):
-    ans = 0
-    while a != 0 and b != 0:
-        ans += int(a % 10 == b % 10)
-        a //= 10
-        b //= 10
-    return ans
+def dp_solve(num):
+    num_arr = list(map(int, str(num)))
+    digit_count = len(num_arr)
+
+    @cache
+    def dp(idx, non_zero_count, under, is_zero_leading):
+        if idx == digit_count:
+            return int(not is_zero_leading)
+        max_digit = 9 if under else num_arr[idx]
+        res = 0
+        for digit in range(max_digit + 1):
+            new_is_zero_leading = is_zero_leading and digit == 0
+            new_under = under or digit != max_digit
+            if digit != 0 and non_zero_count >= 3:
+                continue
+            res += dp(idx + 1, non_zero_count + int(digit != 0), new_under, new_is_zero_leading)
+        return res
+
+    return dp(0, 0, False, True)
 
 
 def solve():
     l, r = read_int_list()
-    mn = float("inf")
-    for x in range(l, r + 1):
-        mn = min(mn, f(l, x) + f(x, r))
-    print(mn)
+    print(dp_solve(r) - dp_solve(l - 1))
 
 
 def main():

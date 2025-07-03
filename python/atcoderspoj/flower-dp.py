@@ -80,6 +80,7 @@ sys.setrecursionlimit(1000000)
 def main():
     flowers_count = read_int()
     heights, beauties = read_n_int_lists(2)
+
     # print(heights, beauties)
     def dp(prev_idx, idx):
         if idx >= flowers_count:

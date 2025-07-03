@@ -89,6 +89,7 @@ def solve():
         sqrt += 1
     print(-1)
 
+
 def main():
     tt = read_int()
     while tt > 0:

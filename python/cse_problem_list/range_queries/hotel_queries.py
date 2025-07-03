@@ -105,6 +105,7 @@ class SegmentTree:
             else:
                 do_update(2 * tree_idx + 2, mid + 1, seg_right, idx, addent)
             self.tree[tree_idx] = max(self.tree[2 * tree_idx + 1], self.tree[2 * tree_idx + 2])
+
         do_update(0, 0, self.arr_length - 1, idx, addent)
 
     def get_first_greater(self, val):
@@ -120,6 +121,7 @@ class SegmentTree:
             if result != -1:
                 return result
             return do_get(2 * idx + 2, mid + 1, seg_right, left, right, val)
+
         return do_get(0, 0, self.arr_length - 1, 0, self.arr_length, val)
 
 
