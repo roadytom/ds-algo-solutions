@@ -1,5 +1,6 @@
 import math
 import sys
+from collections import Counter
 from typing import List
 
 
@@ -69,7 +70,11 @@ INF = float("inf")
 def solve():
     n, k = read_int_list()
     string = read_line()
-
+    counter = Counter(string)
+    if counter['1'] <= k or n < 2 * k:
+        print("ALICE")
+    else:
+        print("BOB")
 
 def main():
     T = read_int()

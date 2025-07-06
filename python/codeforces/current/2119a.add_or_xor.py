@@ -128,51 +128,31 @@ INF = float("inf")
 
 
 # sys.setrecursionlimit(10 ** 5)
+def solve():
+    a, b, x, y = read_int_list()
+    if b < a - 1 or (b == a - 1 and a % 2 == 0):
+        print('-1')
+        return
+    if b == (a - 1) and a % 2 == 1:
+        print(y)
+        return
+    if x < y:
+        print((b - a) * x)
+        return
+    change = b - a
+    if change % 2 == 0:
+        print(change // 2 * x + change // 2 * y)
+    else:
+        if a % 2 == 0:
+            print((change + 1) // 2 * y + change // 2 * x)
+        else:
+            print((change + 1) // 2 * x + change // 2 * y)
+
 
 def main():
-    N = read_int()
-    tree: List[List[int]] = [[] for _ in range(N)]
-    cost = read_int_list()
-
-    for _ in range(N - 1):
-        a, b = read_int_list()
-        tree[a - 1].append(b - 1)
-        tree[b - 1].append(a - 1)
-    value_sum = [0] * N
-    dp = [0] * N
-
-    @recursion_fix
-    def dfs_post_order(node, parent):
-        for child in tree[node]:
-            if child == parent:
-                continue
-            yield dfs_post_order(child, node)
-            value_sum[node] += value_sum[child]
-            dp[node] += dp[child]
-        dp[node] += value_sum[node]
-        value_sum[node] += cost[node]
-        yield
-
-    ans = 0
-
-    @recursion_fix
-    def dfs_pre_order(node, parent):
-        nonlocal ans
-        ans = max(ans, dp[node])
-        for child in tree[node]:
-            if child == parent:
-                continue
-            dp[child] = dp[node] + value_sum[node] - 2 * value_sum[child]
-            value_sum[child] = value_sum[node]
-            yield dfs_pre_order(child, node)
-        yield
-
-    dfs_post_order(0, -1)
-    # print(dp)
-    # print(value_sum)
-    dfs_pre_order(0, -1)
-    # print(dp)
-    print(ans)
+    T = read_int()
+    for _ in range(T):
+        solve()
 
 
 if __name__ == '__main__':

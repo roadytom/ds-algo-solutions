@@ -58,7 +58,7 @@ def make_list(n, *args, default=0):
         default for _ in range(n)]
 
 
-def recursion_fix(f, stack=None):
+def fix(f, stack=None):
     if stack is None:
         stack = []
 
@@ -129,50 +129,47 @@ INF = float("inf")
 
 # sys.setrecursionlimit(10 ** 5)
 
+
 def main():
     N = read_int()
     tree: List[List[int]] = [[] for _ in range(N)]
-    cost = read_int_list()
-
     for _ in range(N - 1):
         a, b = read_int_list()
         tree[a - 1].append(b - 1)
         tree[b - 1].append(a - 1)
-    value_sum = [0] * N
     dp = [0] * N
+    size = [1] * N
+    fact = [1] * (N + 1)
+    inv_fact = [1] * (N + 1)
+    precomp_facts(fact, inv_fact)
 
-    @recursion_fix
     def dfs_post_order(node, parent):
+        facts = 1
+        children = 1
         for child in tree[node]:
             if child == parent:
                 continue
-            yield dfs_post_order(child, node)
-            value_sum[node] += value_sum[child]
-            dp[node] += dp[child]
-        dp[node] += value_sum[node]
-        value_sum[node] += cost[node]
-        yield
+            dfs_post_order(child, node)
+            size[node] += size[child]
+            children = mul(children, dp[child])
+            facts = mul(facts, inv_fact[size[child]])
+        dp[node] = mul(children, fact[size[node] - 1], facts)
 
-    ans = 0
-
-    @recursion_fix
     def dfs_pre_order(node, parent):
-        nonlocal ans
-        ans = max(ans, dp[node])
         for child in tree[node]:
             if child == parent:
                 continue
-            dp[child] = dp[node] + value_sum[node] - 2 * value_sum[child]
-            value_sum[child] = value_sum[node]
-            yield dfs_pre_order(child, node)
-        yield
+            nom = mul(dp[node], fact[size[child]], fact[N - size[child] - 1])
+            denom = mul(inv_fact[N - size[child]], inv_fact[size[child] - 1])
+            dp[child] = mul(nom, denom)
+            dfs_pre_order(child, node)
 
     dfs_post_order(0, -1)
-    # print(dp)
-    # print(value_sum)
+    # print(size)
     dfs_pre_order(0, -1)
-    # print(dp)
-    print(ans)
+    for val in dp:
+        print(val)
+    # print(dp[0])
 
 
 if __name__ == '__main__':

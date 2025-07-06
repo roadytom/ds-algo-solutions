@@ -1,6 +1,7 @@
 import math
 import sys
-from functools import reduce
+from collections import deque, defaultdict
+from functools import reduce, cache
 from types import GeneratorType
 from typing import List
 
@@ -128,51 +129,96 @@ INF = float("inf")
 
 
 # sys.setrecursionlimit(10 ** 5)
-
-def main():
-    N = read_int()
-    tree: List[List[int]] = [[] for _ in range(N)]
+def solve():
+    N, src = read_int_list()
+    src -= 1
     cost = read_int_list()
-
+    tree = [[] for _ in range(N)]
     for _ in range(N - 1):
         a, b = read_int_list()
         tree[a - 1].append(b - 1)
         tree[b - 1].append(a - 1)
-    value_sum = [0] * N
-    dp = [0] * N
+    distances = [0] * N
 
-    @recursion_fix
-    def dfs_post_order(node, parent):
+    def dfs(node, parent):
         for child in tree[node]:
-            if child == parent:
-                continue
-            yield dfs_post_order(child, node)
-            value_sum[node] += value_sum[child]
-            dp[node] += dp[child]
-        dp[node] += value_sum[node]
-        value_sum[node] += cost[node]
-        yield
+            if child != parent:
+                distances[child] = distances[node] + 1
+                dfs(child, node)
 
-    ans = 0
+    dfs(0, -1)
 
-    @recursion_fix
-    def dfs_pre_order(node, parent):
-        nonlocal ans
-        ans = max(ans, dp[node])
+    @cache
+    def dp(node, time, life):
+        life += cost[node]
+        if life == 0 or time >= distances[node]:
+            return 0
+        max_move = 0
         for child in tree[node]:
-            if child == parent:
-                continue
-            dp[child] = dp[node] + value_sum[node] - 2 * value_sum[child]
-            value_sum[child] = value_sum[node]
-            yield dfs_pre_order(child, node)
-        yield
+            max_move = max(max_move, dp(child, time + 1, life))
+        return max_move + 1
 
-    dfs_post_order(0, -1)
-    # print(dp)
-    # print(value_sum)
-    dfs_pre_order(0, -1)
-    # print(dp)
-    print(ans)
+    print(dp(src, 0, 1))
+
+
+def solve_new():
+    n, st = map(int, input().split())
+    weights = list(map(int, input().split()))
+
+    adj = defaultdict(list)
+    for _ in range(n - 1):
+        u, v = map(int, input().split())
+        adj[u].append(v)
+        adj[v].append(u)
+
+    dist_from_root = [float('inf')] * (n + 1)
+    dist_from_root[1] = 0
+    queue = deque([1])
+
+    while queue:
+        node = queue.popleft()
+        for neighbor in adj[node]:
+            if dist_from_root[neighbor] == float('inf'):
+                dist_from_root[neighbor] = dist_from_root[node] + 1
+                queue.append(neighbor)
+
+    queue = deque([(st, 0, 1)])
+    visited = {}  # (vertex, time) -> max_life seen
+    max_moves = 0
+
+    while queue:
+        vertex, time, life = queue.popleft()
+
+        new_life = life + weights[vertex - 1]  # weights are 0-indexed
+
+        if new_life <= 0 or dist_from_root[vertex] <= time:
+            continue
+
+        max_moves = max(max_moves, time)
+
+        state_key = (vertex, time)
+        if state_key in visited and visited[state_key] >= new_life:
+            continue
+        visited[state_key] = new_life
+
+        for next_vertex in adj[vertex]:
+            next_time = time + 1
+
+            if dist_from_root[next_vertex] <= next_time:
+                continue
+
+            if next_time > n + 100:  # generous upper bound
+                continue
+
+            queue.append((next_vertex, next_time, new_life))
+
+    return max_moves + 1
+
+
+def main():
+    T = read_int()
+    for _ in range(T):
+        print(solve_new())
 
 
 if __name__ == '__main__':

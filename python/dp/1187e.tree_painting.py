@@ -1,6 +1,5 @@
 import math
 import sys
-from functools import reduce
 from types import GeneratorType
 from typing import List
 
@@ -58,11 +57,11 @@ def make_list(n, *args, default=0):
         default for _ in range(n)]
 
 
-def recursion_fix(f, stack=None):
+def bootstrap(f, stack=None):
     if stack is None:
         stack = []
 
-    def wrapped(*args, **kwargs):
+    def wrappedfunc(*args, **kwargs):
         if stack:
             return f(*args, **kwargs)
         else:
@@ -78,45 +77,7 @@ def recursion_fix(f, stack=None):
                     to = stack[-1].send(to)
             return to
 
-    return wrapped
-
-
-def add(*args):
-    return reduce(lambda a, b: (a + b) % MOD, args)
-
-
-def sub(*args):
-    return reduce(lambda a, b: ((a - b) % MOD + MOD) % MOD, args)
-
-
-def mul(*args):
-    return reduce(lambda a, b: (a * b) % MOD, args)
-
-
-def mod_inverse(x):
-    return exp(x, MOD - 2)
-
-
-def exp(base, exponent):
-    if exponent == 0:
-        return 1
-    half = exp(base, exponent // 2)
-    if exponent % 2 == 0:
-        return mul(half, half)
-    return mul(half, half, base)
-
-
-# factorials = [1] * 2_000_001
-# inv_factorials = [1] * 2_000_001
-
-def precomp_facts(factorials, inv_factorials):
-    factorials[0] = 1
-    inv_factorials[0] = 1
-    for i in range(1, len(factorials)):
-        factorials[i] = mul(factorials[i - 1], i)
-    inv_factorials[-1] = mod_inverse(factorials[-1])
-    for i in reversed(range(len(inv_factorials) - 1)):
-        inv_factorials[i] = mul(inv_factorials[i + 1], i + 1)
+    return wrappedfunc
 
 
 dire = [[1, 0], [0, 1], [-1, 0], [0, -1]]
@@ -126,53 +87,46 @@ ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MOD = 1000000007
 INF = float("inf")
 
-
 # sys.setrecursionlimit(10 ** 5)
 
-def main():
-    N = read_int()
-    tree: List[List[int]] = [[] for _ in range(N)]
-    cost = read_int_list()
 
-    for _ in range(N - 1):
+def main():
+    n = read_int()
+    tree: list[list[int]] = [[] for _ in range(n)]
+    for _ in range(n - 1):
         a, b = read_int_list()
         tree[a - 1].append(b - 1)
         tree[b - 1].append(a - 1)
-    value_sum = [0] * N
-    dp = [0] * N
 
-    @recursion_fix
+    subtree_size = [1] * n
+    answer = [0] * n
+
+    @bootstrap
     def dfs_post_order(node, parent):
-        for child in tree[node]:
-            if child == parent:
+        for adj in tree[node]:
+            if adj == parent:
                 continue
-            yield dfs_post_order(child, node)
-            value_sum[node] += value_sum[child]
-            dp[node] += dp[child]
-        dp[node] += value_sum[node]
-        value_sum[node] += cost[node]
-        yield
-
-    ans = 0
-
-    @recursion_fix
-    def dfs_pre_order(node, parent):
-        nonlocal ans
-        ans = max(ans, dp[node])
-        for child in tree[node]:
-            if child == parent:
-                continue
-            dp[child] = dp[node] + value_sum[node] - 2 * value_sum[child]
-            value_sum[child] = value_sum[node]
-            yield dfs_pre_order(child, node)
+            yield dfs_post_order(adj, node)
+            subtree_size[node] += subtree_size[adj]
+            answer[node] += answer[adj]
+        answer[node] += subtree_size[node]
         yield
 
     dfs_post_order(0, -1)
-    # print(dp)
-    # print(value_sum)
+
+    # print(answer)
+
+    @bootstrap
+    def dfs_pre_order(node, parent):
+        for adj in tree[node]:
+            if adj == parent:
+                continue
+            answer[adj] = answer[node] + (n - subtree_size[adj]) - subtree_size[adj]
+            yield dfs_pre_order(adj, node)
+        yield
+
     dfs_pre_order(0, -1)
-    # print(dp)
-    print(ans)
+    print(max(answer))
 
 
 if __name__ == '__main__':

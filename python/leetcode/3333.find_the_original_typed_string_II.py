@@ -1,6 +1,7 @@
 import math
 import sys
 from functools import reduce
+from itertools import accumulate
 from types import GeneratorType
 from typing import List
 
@@ -129,51 +130,38 @@ INF = float("inf")
 
 # sys.setrecursionlimit(10 ** 5)
 
-def main():
-    N = read_int()
-    tree: List[List[int]] = [[] for _ in range(N)]
-    cost = read_int_list()
+class Solution:
+    def get_segment_length(self, word):
+        segment_length = []
+        idx = 0
+        while idx < len(word):
+            next_segment_idx = idx + 1
+            while next_segment_idx < len(word) and word[idx] == word[next_segment_idx]:
+                next_segment_idx += 1
+            segment_length.append(next_segment_idx - idx)
+            idx = next_segment_idx
+        return segment_length
 
-    for _ in range(N - 1):
-        a, b = read_int_list()
-        tree[a - 1].append(b - 1)
-        tree[b - 1].append(a - 1)
-    value_sum = [0] * N
-    dp = [0] * N
+    def possibleStringCount(self, word: str, k: int) -> int:
+        MOD = 10 ** 9 + 7
 
-    @recursion_fix
-    def dfs_post_order(node, parent):
-        for child in tree[node]:
-            if child == parent:
-                continue
-            yield dfs_post_order(child, node)
-            value_sum[node] += value_sum[child]
-            dp[node] += dp[child]
-        dp[node] += value_sum[node]
-        value_sum[node] += cost[node]
-        yield
+        segment_length = self.get_segment_length(word)
+        n = len(segment_length)
+        total_ways = mul(*segment_length)
 
-    ans = 0
-
-    @recursion_fix
-    def dfs_pre_order(node, parent):
-        nonlocal ans
-        ans = max(ans, dp[node])
-        for child in tree[node]:
-            if child == parent:
-                continue
-            dp[child] = dp[node] + value_sum[node] - 2 * value_sum[child]
-            value_sum[child] = value_sum[node]
-            yield dfs_pre_order(child, node)
-        yield
-
-    dfs_post_order(0, -1)
-    # print(dp)
-    # print(value_sum)
-    dfs_pre_order(0, -1)
-    # print(dp)
-    print(ans)
+        if len(segment_length) >= k:
+            return total_ways
+        dp = [[0] * k for _ in range(n + 1)]
+        dp[0] = [1] + [0] * (k - 1)
+        prefix_sum = list(accumulate(dp[0], add, initial=0))
+        for seg_idx in range(1, n + 1):
+            seg_length = segment_length[seg_idx - 1]
+            for curr_size in range(k):
+                dp[seg_idx][curr_size] = prefix_sum[curr_size]
+                if curr_size - seg_length >= 1:
+                    dp[seg_idx][curr_size] = sub(dp[seg_idx][curr_size], prefix_sum[curr_size - seg_length])
+            prefix_sum = list(accumulate(dp[seg_idx], add, initial=0))
+        return total_ways - sum(dp[-1])
 
 
-if __name__ == '__main__':
-    main()
+print(Solution().possibleStringCount("aabbccdd", 7))

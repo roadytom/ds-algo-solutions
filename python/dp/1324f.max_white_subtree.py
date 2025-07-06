@@ -131,14 +131,12 @@ INF = float("inf")
 
 def main():
     N = read_int()
+    color = list(map(lambda x: -1 if x == 0 else x, read_int_list()))
     tree: List[List[int]] = [[] for _ in range(N)]
-    cost = read_int_list()
-
     for _ in range(N - 1):
         a, b = read_int_list()
         tree[a - 1].append(b - 1)
         tree[b - 1].append(a - 1)
-    value_sum = [0] * N
     dp = [0] * N
 
     @recursion_fix
@@ -147,32 +145,25 @@ def main():
             if child == parent:
                 continue
             yield dfs_post_order(child, node)
-            value_sum[node] += value_sum[child]
-            dp[node] += dp[child]
-        dp[node] += value_sum[node]
-        value_sum[node] += cost[node]
+            dp[node] += max(0, dp[child])
+        dp[node] += color[node]
         yield
-
-    ans = 0
 
     @recursion_fix
     def dfs_pre_order(node, parent):
-        nonlocal ans
-        ans = max(ans, dp[node])
         for child in tree[node]:
             if child == parent:
                 continue
-            dp[child] = dp[node] + value_sum[node] - 2 * value_sum[child]
-            value_sum[child] = value_sum[node]
+            original_value = dp[node]
+            dp[node] -= max(0, dp[child])
+            dp[child] += max(0, dp[node])
             yield dfs_pre_order(child, node)
+            dp[node] = original_value
         yield
 
     dfs_post_order(0, -1)
-    # print(dp)
-    # print(value_sum)
     dfs_pre_order(0, -1)
-    # print(dp)
-    print(ans)
+    print(" ".join(map(str, dp)))
 
 
 if __name__ == '__main__':

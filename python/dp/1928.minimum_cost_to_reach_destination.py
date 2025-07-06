@@ -1,6 +1,7 @@
 import math
 import sys
 from functools import reduce
+from heapq import heappop, heappush
 from types import GeneratorType
 from typing import List
 
@@ -128,51 +129,32 @@ INF = float("inf")
 
 
 # sys.setrecursionlimit(10 ** 5)
+class Solution:
+    def minCost(self, max_time: int, edges: List[List[int]], passing_fees: List[int]) -> int:
+        N = max([max(a, b) for a, b, _ in edges]) + 1
+        graph: List[List[tuple[int, int]]] = [[] for _ in range(N)]
+        for a, b, time in edges:
+            graph[a].append((b, time))
+            graph[b].append((a, time))
+        costs = [float("inf")] * N
+
+        min_heap = [(0, 0)]
+        costs[0] = passing_fees[0]
+        while min_heap:
+            curr_time, node = heappop(min_heap)
+            for adj, time in graph[node]:
+                if curr_time + time <= max_time and costs[adj] > costs[node] + passing_fees[adj]:
+                    costs[adj] = costs[node] + passing_fees[adj]
+                    heappush(min_heap, (curr_time + time, adj))
+            print(min_heap)
+
+        return -1 if costs[N - 1] == float("inf") else costs[N - 1]
+
 
 def main():
-    N = read_int()
-    tree: List[List[int]] = [[] for _ in range(N)]
-    cost = read_int_list()
-
-    for _ in range(N - 1):
-        a, b = read_int_list()
-        tree[a - 1].append(b - 1)
-        tree[b - 1].append(a - 1)
-    value_sum = [0] * N
-    dp = [0] * N
-
-    @recursion_fix
-    def dfs_post_order(node, parent):
-        for child in tree[node]:
-            if child == parent:
-                continue
-            yield dfs_post_order(child, node)
-            value_sum[node] += value_sum[child]
-            dp[node] += dp[child]
-        dp[node] += value_sum[node]
-        value_sum[node] += cost[node]
-        yield
-
-    ans = 0
-
-    @recursion_fix
-    def dfs_pre_order(node, parent):
-        nonlocal ans
-        ans = max(ans, dp[node])
-        for child in tree[node]:
-            if child == parent:
-                continue
-            dp[child] = dp[node] + value_sum[node] - 2 * value_sum[child]
-            value_sum[child] = value_sum[node]
-            yield dfs_pre_order(child, node)
-        yield
-
-    dfs_post_order(0, -1)
-    # print(dp)
-    # print(value_sum)
-    dfs_pre_order(0, -1)
-    # print(dp)
-    print(ans)
+    print(Solution().minCost(100,
+                             [[0, 1, 100]],
+                             [2, 5]))
 
 
 if __name__ == '__main__':

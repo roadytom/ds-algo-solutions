@@ -128,51 +128,39 @@ INF = float("inf")
 
 
 # sys.setrecursionlimit(10 ** 5)
+def solve():
+    l, r = read_int_list()
+    left_arr = list(map(int, str(l)))
+    right_arr = list(map(int, str(r)))
+    numbers_count = len(left_arr)
+    memo = [[[-1] * 2 for _ in range(2)] for _ in range(numbers_count)]
+
+    @recursion_fix
+    def dp(position, left_upper, right_under):
+        # base case
+        if position >= numbers_count:
+            yield 0
+        if memo[position][left_upper][right_under] != -1:
+            yield memo[position][left_upper][right_under]
+        min_digit = 0 if left_upper else left_arr[position]
+        max_digit = 9 if right_under else right_arr[position]
+        min_match = float("inf")
+        for digit in range(min_digit, max_digit + 1):
+            new_left_upper = left_upper or digit > min_digit
+            new_right_under = right_under or digit < max_digit
+            match_count = int(digit == left_arr[position]) + int(digit == right_arr[position])
+            res = yield dp(position + 1, new_left_upper, new_right_under)
+            min_match = min(min_match, res + match_count)
+        memo[position][left_upper][right_under] = min_match
+        yield min_match
+
+    print(dp(0, False, False))
+
 
 def main():
-    N = read_int()
-    tree: List[List[int]] = [[] for _ in range(N)]
-    cost = read_int_list()
-
-    for _ in range(N - 1):
-        a, b = read_int_list()
-        tree[a - 1].append(b - 1)
-        tree[b - 1].append(a - 1)
-    value_sum = [0] * N
-    dp = [0] * N
-
-    @recursion_fix
-    def dfs_post_order(node, parent):
-        for child in tree[node]:
-            if child == parent:
-                continue
-            yield dfs_post_order(child, node)
-            value_sum[node] += value_sum[child]
-            dp[node] += dp[child]
-        dp[node] += value_sum[node]
-        value_sum[node] += cost[node]
-        yield
-
-    ans = 0
-
-    @recursion_fix
-    def dfs_pre_order(node, parent):
-        nonlocal ans
-        ans = max(ans, dp[node])
-        for child in tree[node]:
-            if child == parent:
-                continue
-            dp[child] = dp[node] + value_sum[node] - 2 * value_sum[child]
-            value_sum[child] = value_sum[node]
-            yield dfs_pre_order(child, node)
-        yield
-
-    dfs_post_order(0, -1)
-    # print(dp)
-    # print(value_sum)
-    dfs_pre_order(0, -1)
-    # print(dp)
-    print(ans)
+    T = read_int()
+    for _ in range(T):
+        solve()
 
 
 if __name__ == '__main__':

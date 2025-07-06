@@ -1,6 +1,5 @@
 import math
 import sys
-from functools import reduce
 from types import GeneratorType
 from typing import List
 
@@ -58,7 +57,7 @@ def make_list(n, *args, default=0):
         default for _ in range(n)]
 
 
-def recursion_fix(f, stack=None):
+def fix(f, stack=None):
     if stack is None:
         stack = []
 
@@ -81,44 +80,6 @@ def recursion_fix(f, stack=None):
     return wrapped
 
 
-def add(*args):
-    return reduce(lambda a, b: (a + b) % MOD, args)
-
-
-def sub(*args):
-    return reduce(lambda a, b: ((a - b) % MOD + MOD) % MOD, args)
-
-
-def mul(*args):
-    return reduce(lambda a, b: (a * b) % MOD, args)
-
-
-def mod_inverse(x):
-    return exp(x, MOD - 2)
-
-
-def exp(base, exponent):
-    if exponent == 0:
-        return 1
-    half = exp(base, exponent // 2)
-    if exponent % 2 == 0:
-        return mul(half, half)
-    return mul(half, half, base)
-
-
-# factorials = [1] * 2_000_001
-# inv_factorials = [1] * 2_000_001
-
-def precomp_facts(factorials, inv_factorials):
-    factorials[0] = 1
-    inv_factorials[0] = 1
-    for i in range(1, len(factorials)):
-        factorials[i] = mul(factorials[i - 1], i)
-    inv_factorials[-1] = mod_inverse(factorials[-1])
-    for i in reversed(range(len(inv_factorials) - 1)):
-        inv_factorials[i] = mul(inv_factorials[i + 1], i + 1)
-
-
 dire = [[1, 0], [0, 1], [-1, 0], [0, -1]]
 dire8 = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]
 alphabets = "abcdefghijklmnopqrstuvwxyz"
@@ -126,53 +87,72 @@ ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MOD = 1000000007
 INF = float("inf")
 
+sys.setrecursionlimit(10 ** 6)
 
-# sys.setrecursionlimit(10 ** 5)
+
+def precompute_factorials(fact, inv_fact):
+    fact[0] = inv_fact[0] = 1
+    for i in range(1, len(fact)):
+        fact[i] = fact[i - 1] * i % MOD
+    inv_fact[-1] = mod_inverse(fact[-1])
+    for i in range(len(inv_fact) - 2, 0, -1):
+        inv_fact[i] = inv_fact[i + 1] * (i + 1) % MOD
+
+
+def mod_pow(x, n):
+    res = 1
+    while n > 0:
+        if n % 2 == 1:
+            res = (res * x) % MOD
+        x = x * x % MOD
+        n >>= 1
+    return res
+
+
+def mod_inverse(x):
+    return mod_pow(x, MOD - 2)
+
 
 def main():
     N = read_int()
     tree: List[List[int]] = [[] for _ in range(N)]
-    cost = read_int_list()
-
     for _ in range(N - 1):
         a, b = read_int_list()
         tree[a - 1].append(b - 1)
         tree[b - 1].append(a - 1)
-    value_sum = [0] * N
     dp = [0] * N
+    size = [1] * N
+    fact = [0] * (N + 1)
+    inv_fact = [0] * (N + 1)
+    precompute_factorials(fact, inv_fact)
 
-    @recursion_fix
     def dfs_post_order(node, parent):
+        facts = 1
+        children = 1
         for child in tree[node]:
             if child == parent:
                 continue
-            yield dfs_post_order(child, node)
-            value_sum[node] += value_sum[child]
-            dp[node] += dp[child]
-        dp[node] += value_sum[node]
-        value_sum[node] += cost[node]
-        yield
+            dfs_post_order(child, node)
+            size[node] += size[child]
+            children = children * dp[child] % MOD
+            facts = facts * fact[size[child]] % MOD
+        dp[node] = children * fact[size[node] - 1] * mod_inverse(facts)
 
-    ans = 0
-
-    @recursion_fix
     def dfs_pre_order(node, parent):
-        nonlocal ans
-        ans = max(ans, dp[node])
         for child in tree[node]:
             if child == parent:
                 continue
-            dp[child] = dp[node] + value_sum[node] - 2 * value_sum[child]
-            value_sum[child] = value_sum[node]
-            yield dfs_pre_order(child, node)
-        yield
+            dp[child] = (((((dp[node] * fact[size[child]]) % MOD * fact[N - size[child] - 1]) % MOD) * inv_fact[
+                N - size[child]]) % MOD * inv_fact[
+                             size[child] - 1]) % MOD
+            dfs_pre_order(child, node)
 
     dfs_post_order(0, -1)
-    # print(dp)
-    # print(value_sum)
+    # print(size)
     dfs_pre_order(0, -1)
-    # print(dp)
-    print(ans)
+    for val in dp:
+        print(val)
+    # print(dp[0])
 
 
 if __name__ == '__main__':

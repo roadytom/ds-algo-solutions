@@ -112,12 +112,11 @@ public class Sample {
 
 
         String next() {
-            while (!st.hasMoreTokens())
-                try {
-                    st = new StringTokenizer(br.readLine());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            while (!st.hasMoreTokens()) try {
+                st = new StringTokenizer(br.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return st.nextToken();
         }
 

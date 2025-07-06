@@ -1,6 +1,8 @@
 import math
 import sys
+from bisect import bisect_right
 from functools import reduce
+from itertools import combinations
 from types import GeneratorType
 from typing import List
 
@@ -128,51 +130,43 @@ INF = float("inf")
 
 
 # sys.setrecursionlimit(10 ** 5)
+def solve():
+    def calculate_value(a, b, c):
+        # print(a, b, c)
+        return sum((x - y) * (x - y) for x, y in combinations([a, b, c], 2))
+
+    def find_min_val(val, A, B):
+        first_idx = bisect_right(A, val)
+        second_idx = bisect_right(B, val)
+        a_options = list(filter(lambda x: 0 <= x < len(A), [first_idx - 1, first_idx]))
+        b_options = list(filter(lambda x: 0 <= x < len(B), [second_idx - 1, second_idx]))
+        min_val = float("inf")
+        for a_idx in a_options:
+            for b_idx in b_options:
+                min_val = min(min_val, calculate_value(val, A[a_idx], B[b_idx]))
+        return min_val
+
+    lengths = read_int_list()
+    X = read_int_list()
+    Y = read_int_list()
+    Z = read_int_list()
+    X.sort()
+    Y.sort()
+    Z.sort()
+    min_val = float("inf")
+    for x in X:
+        min_val = min(min_val, find_min_val(x, Y, Z))
+    for y in Y:
+        min_val = min(min_val, find_min_val(y, X, Z))
+    for z in Z:
+        min_val = min(min_val, find_min_val(z, X, Y))
+    print(min_val)
+
 
 def main():
-    N = read_int()
-    tree: List[List[int]] = [[] for _ in range(N)]
-    cost = read_int_list()
-
-    for _ in range(N - 1):
-        a, b = read_int_list()
-        tree[a - 1].append(b - 1)
-        tree[b - 1].append(a - 1)
-    value_sum = [0] * N
-    dp = [0] * N
-
-    @recursion_fix
-    def dfs_post_order(node, parent):
-        for child in tree[node]:
-            if child == parent:
-                continue
-            yield dfs_post_order(child, node)
-            value_sum[node] += value_sum[child]
-            dp[node] += dp[child]
-        dp[node] += value_sum[node]
-        value_sum[node] += cost[node]
-        yield
-
-    ans = 0
-
-    @recursion_fix
-    def dfs_pre_order(node, parent):
-        nonlocal ans
-        ans = max(ans, dp[node])
-        for child in tree[node]:
-            if child == parent:
-                continue
-            dp[child] = dp[node] + value_sum[node] - 2 * value_sum[child]
-            value_sum[child] = value_sum[node]
-            yield dfs_pre_order(child, node)
-        yield
-
-    dfs_post_order(0, -1)
-    # print(dp)
-    # print(value_sum)
-    dfs_pre_order(0, -1)
-    # print(dp)
-    print(ans)
+    T = read_int()
+    for _ in range(T):
+        solve()
 
 
 if __name__ == '__main__':
