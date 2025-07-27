@@ -1,24 +1,24 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define int long long
+#define ll long long
 #define MOD 1000000007
 #define INF LLONG_MAX
 
 void solve() {
-    int n, s, x;
+    ll n, s, x;
     cin >> n >> s >> x;
-    vector<int> arr(n);
-    for (int &a: arr) cin >> a;
+    vector<ll> arr(n);
+    for (ll &a: arr) cin >> a;
 
-    int left = 0, right = 0;
-    int window_sum = 0;
-    int curr_max = LLONG_MIN;
-    map<int, vector<int> > prefix_sum;
+    ll left = 0, right = 0;
+    ll window_sum = 0;
+    ll curr_max = LLONG_MIN;
+    map<ll, vector<ll> > prefix_sum;
     prefix_sum[0].push_back(-1);
 
-    int ans = 0;
-    int right_most_max = -1;
+    ll ans = 0;
+    ll right_most_max = -1;
 
     while (right < n) {
         window_sum += arr[right];
@@ -28,11 +28,11 @@ void solve() {
         curr_max = max(curr_max, arr[right]);
 
         if (curr_max == x) {
-            int target = window_sum - s;
+            ll target = window_sum - s;
             if (prefix_sum.count(target)) {
                 auto &idxs = prefix_sum[target];
                 // Count elements in range [left-1, right_most_max) using binary search
-                int cnt = lower_bound(idxs.begin(), idxs.end(), right_most_max) -
+                ll cnt = lower_bound(idxs.begin(), idxs.end(), right_most_max) -
                           lower_bound(idxs.begin(), idxs.end(), left - 1);
                 ans += cnt;
             }
@@ -56,7 +56,7 @@ void solve() {
     cout << ans << '\n';
 }
 
-int32_t main() {
+int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
