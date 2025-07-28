@@ -80,6 +80,7 @@ def recursion_fix(f, stack=None):
 
     return wrapped
 
+
 def add(*args):
     return reduce(lambda a, b: (a + b) % MOD, args)
 
@@ -127,14 +128,40 @@ INF = float("inf")
 
 
 # sys.setrecursionlimit(10 ** 5)
-def solve():
-    pass
+def solve(n):
+    memo = [[-1] * 8 for _ in range(n)]
+
+    @recursion_fix
+    def dp(col, mask):
+        if col >= n:
+            yield int(col == n and mask == 0)
+        if memo[col][mask] != -1:
+            yield memo[col][mask]
+        if mask == 7:
+            memo[col][mask] = yield dp(col + 1, 0)
+            yield memo[col][mask]
+        res = 0
+        next_mask = mask ^ 7
+        next_res = yield dp(col + 1, next_mask)
+        res += next_res
+        if (mask & 0b110) == 0:
+            next_res = yield dp(col + 1, (mask & 0b001) ^ 0b001)
+            res += next_res
+        if (mask & 0b011) == 0:
+            next_res = yield dp(col + 1, (mask & 0b100) ^ 0b100)
+            res += next_res
+        memo[col][mask] = res
+        yield res
+
+    print(dp(0, 0))
 
 
 def main():
-    T = read_int()
-    for _ in range(T):
-        solve()
+    while True:
+        t = read_int()
+        if t == -1:
+            break
+        solve(t)
 
 
 if __name__ == '__main__':

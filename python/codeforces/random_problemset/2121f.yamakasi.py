@@ -152,7 +152,6 @@ def solve():
             ans += idx + 1
         prefix_sum[window_sum].append(right)
         if curr_max > x:
-            left = right + 1
             curr_max = float("-inf")
             window_sum = 0
             right_most_max = -1

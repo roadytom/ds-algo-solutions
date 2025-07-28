@@ -68,8 +68,8 @@ INF = float("inf")
 
 
 def main():
-    pass
-
+    arr = make_list(1, 2, 3,3, default=-1)
+    print(arr)
 
 if __name__ == '__main__':
     main()

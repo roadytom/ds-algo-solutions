@@ -13,7 +13,6 @@ using namespace std;
 #define rep(i,a,b) for (int i=(int)(a);i<(int)(b);i++)
 
 
-
 // Constants
 constexpr ll MOD = 1e9 + 7;
 constexpr ll INF = 1e18;
@@ -141,10 +140,23 @@ auto make_vector(size_t size, Args... args) {
 /** END OF CREATION MULTI-D VECTOR **/
 
 /**
-
+I must be less than the smallest element from my left
 */
 void solve() {
-    
+    int n;
+    cin >> n;
+    vector<int> b(n);
+    rep(i, 0, n) cin >> b[i];
+    int min_element = b[0];
+    rep(i, 1, n) {
+        if (b[i] < 2 * min_element) {
+            min_element = min(min_element, b[i]);
+            continue;
+        }
+        cout << "No" << endl;
+        return;
+    }
+    cout << "Yes" << endl;
 }
 
 int main() {

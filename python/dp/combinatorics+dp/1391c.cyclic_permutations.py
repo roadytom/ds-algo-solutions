@@ -118,6 +118,7 @@ def precomp_facts(factorials, inv_factorials):
     for i in reversed(range(len(inv_factorials) - 1)):
         inv_factorials[i] = mul(inv_factorials[i + 1], i + 1)
 
+
 dire = [[1, 0], [0, 1], [-1, 0], [0, -1]]
 dire8 = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]
 alphabets = "abcdefghijklmnopqrstuvwxyz"
@@ -125,10 +126,12 @@ ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MOD = 1000000007
 INF = float("inf")
 
+
 # sys.setrecursionlimit(10 ** 5)
 
 def main():
-    pass
+    n = read_int()
+    
 
 
 if __name__ == '__main__':

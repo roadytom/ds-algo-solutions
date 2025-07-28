@@ -118,6 +118,7 @@ def precomp_facts(factorials, inv_factorials):
     for i in reversed(range(len(inv_factorials) - 1)):
         inv_factorials[i] = mul(inv_factorials[i + 1], i + 1)
 
+
 dire = [[1, 0], [0, 1], [-1, 0], [0, -1]]
 dire8 = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]
 alphabets = "abcdefghijklmnopqrstuvwxyz"
@@ -125,10 +126,42 @@ ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MOD = 1000000007
 INF = float("inf")
 
+
 # sys.setrecursionlimit(10 ** 5)
 
 def main():
-    pass
+    n, k = read_int_list()
+
+    multiples = [[] for _ in range(n + 1)]
+    for num in range(1, n + 1):
+        mult = 1
+        while num * mult <= n:
+            multiples[num].append(num * mult)
+            mult += 1
+    dp = [[0] * k for _ in range(n + 1)]
+    for num in range(n + 1):
+        dp[num][0] = 1
+    for count in range(0, k - 1):
+        for curr in range(1, n + 1):
+            for mult in multiples[curr]:
+                dp[mult][count + 1] = add(dp[mult][count + 1], dp[curr][count])
+    print(add(*[dp[num][-1] for num in range(1, n + 1)]))
+    #
+    # @recursion_fix
+    # def dp(prev, count):
+    #     # base case
+    #     if count == k:
+    #         yield 1
+    #     if memo[prev][count] != -1:
+    #         yield memo[prev][count]
+    #     ans = 0
+    #     mult = 1
+    #     for mult in mutiples[prev]:
+    #         ans = add(ans, (yield dp(mult, count + 1)))
+    #     memo[prev][count] = ans
+    #     yield ans
+    #
+    # print(dp(1, 0))
 
 
 if __name__ == '__main__':

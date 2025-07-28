@@ -2,7 +2,7 @@
 using namespace std;
 
 // Macros
-#define ll long long
+#define ll unsigned long long
 #define vi vector<int>
 #define vvi vector<vector<int>>
 #define pii std::pair<int, int>
@@ -13,18 +13,11 @@ using namespace std;
 #define rep(i,a,b) for (int i=(int)(a);i<(int)(b);i++)
 
 
-
 // Constants
 constexpr ll MOD = 1e9 + 7;
 constexpr ll INF = 1e18;
 constexpr ll MAXN = 2e6 + 5; // for factorial precomputation etc.
 
-// Directions
-ll dx[4] = {1, 0, -1, 0};
-ll dy[4] = {0, 1, 0, -1};
-
-ll dx8[8] = {1, 1, 0, -1, -1, -1, 0, 1};
-ll dy8[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 
 // Fast Exponentiation
 ll mod_exp(ll base, ll exp, ll mod = MOD) {
@@ -144,7 +137,30 @@ auto make_vector(size_t size, Args... args) {
 
 */
 void solve() {
-    
+    ll n, c;
+    cin >> n >> c;
+    vector<ll> costs(n);
+    rep(i, 0, n) {
+        cin >> costs[i];
+    }
+    sort(all(costs));
+    ll q = n;
+    ll mult = 1;
+    ll ans = 0;
+    while (q--) {
+        auto it = lower_bound(all(costs), c, [&](const ll el, const ll target) {
+            return el * mult <= target;
+        });
+
+        if (it == costs.begin()) {
+            ans += costs.size();
+            break;
+        }
+        it--;
+        costs.erase(it);
+        mult = mult * 2;
+    }
+    cout << ans << endl;
 }
 
 int main() {

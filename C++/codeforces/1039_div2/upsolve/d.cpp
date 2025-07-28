@@ -1,3 +1,6 @@
+a
+.
+cpp
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -140,28 +143,23 @@ auto make_vector(size_t size, Args... args) {
 /** END OF CREATION MULTI-D VECTOR **/
 
 /**
-1, 2, 3, 4
 
-2, 3
-1, 4
-Remove exactly one element from pair
-find all subarrays which do not contain both A and B
-MAXIMIZE subarray count
-__*_________*___
 */
-class Solution {
-public:
-    ll maxSubarrays(int n, vector<vector<int> > &conflicting_pairs) {
-        return 0;
-    }
-};
+void solve() {
+    int n;
+    cin >> n;
+    vector<int> p(n);
+    rep(i, 0, n) cin >> p[i];
+}
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
-    Solution s;
-    vector<vector<int> > temp{{2, 3}, {1, 4}};
-    cout << s.maxSubarrays(4, temp) << endl;
+    int T;
+    cin >> T;
+    for (int i = 0; i < T; i++) {
+        solve();
+    }
     return 0;
 }

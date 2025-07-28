@@ -1,4 +1,4 @@
-a.cpp#include <bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 // Macros
@@ -11,7 +11,6 @@ using namespace std;
 #define rall(x) (x).rbegin(), (x).rend()
 #define endl "\n"
 #define rep(i,a,b) for (int i=(int)(a);i<(int)(b);i++)
-
 
 
 // Constants
@@ -144,7 +143,33 @@ auto make_vector(size_t size, Args... args) {
 
 */
 void solve() {
-    
+    int n;
+    cin >> n;
+    vector<int> arr(n);
+    rep(i, 0, n) cin >> arr[i];
+    int smaller = 1;
+    int left = 0, right = n - 1;
+    while (left <= right) {
+        if (smaller) {
+            if (arr[left] < arr[right]) {
+                cout << 'L';
+                left++;
+            } else {
+                cout << 'R';
+                right--;
+            }
+        } else {
+            if (arr[left] > arr[right]) {
+                cout << 'L';
+                left++;
+            } else {
+                cout << 'R';
+                right--;
+            }
+        }
+        smaller ^= 1;
+    }
+    cout << endl;
 }
 
 int main() {

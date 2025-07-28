@@ -1,6 +1,6 @@
 import math
 import sys
-from functools import reduce
+from functools import reduce, cache
 from types import GeneratorType
 from typing import List
 
@@ -118,6 +118,7 @@ def precomp_facts(factorials, inv_factorials):
     for i in reversed(range(len(inv_factorials) - 1)):
         inv_factorials[i] = mul(inv_factorials[i + 1], i + 1)
 
+
 dire = [[1, 0], [0, 1], [-1, 0], [0, -1]]
 dire8 = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]
 alphabets = "abcdefghijklmnopqrstuvwxyz"
@@ -125,11 +126,25 @@ ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 MOD = 1000000007
 INF = float("inf")
 
+
 # sys.setrecursionlimit(10 ** 5)
 
-def main():
-    pass
-
+def main(n):
+    @cache
+    def dp(row, col):
+        if row >= n or col >= n:
+            return int(row == n and col == n)
+        ans = 0
+        if row + 2 == col:
+            ans = dp(row + 2, col)
+        elif col + 2 == row:
+            ans = dp(row, col + 2)
+        else:
+            ans += dp(row + 1, col + 1)
+            ans += dp(row + 2, col)
+            ans += dp(row, col + 2)
+        return ans
+    print(dp(0, 0))
 
 if __name__ == '__main__':
-    main()
+    main(4)
