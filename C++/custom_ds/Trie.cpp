@@ -19,8 +19,15 @@ public:
     Trie() {
         root = new TrieNode();
     }
+    static char buf[450 << 20];
+    void* operator new(size_t s) {
+        static size_t i = sizeof buf;
+        assert(s < i);
+        return &buf[i -= s];
+    }
+    void operator delete(void*) {}
 
-    void insert(string &word) {
+    void insert(const string &word) const {
         TrieNode *itr = root;
         for (auto &ch: word) {
             int idx = ch - 'a';
@@ -32,7 +39,7 @@ public:
         itr->end = true;
     }
 
-    bool search(string &word) {
+    bool search(const string &word) const {
         TrieNode *itr = root;
         for (auto &ch: word) {
             int idx = ch - 'a';
@@ -44,7 +51,7 @@ public:
         return itr->end;
     }
 
-    bool start_with(string &word) {
+    bool start_with(const string &word) const {
         TrieNode *itr = root;
         for (auto &ch: word) {
             int idx = ch - 'a';
