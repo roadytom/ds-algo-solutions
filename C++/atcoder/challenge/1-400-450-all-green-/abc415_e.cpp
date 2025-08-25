@@ -42,40 +42,28 @@ void solve() {
     rep(i, 0, rows + cols - 1)
         cin >> ps[i];
     const ll inf = LLONG_MAX;
-    v<v<pll> > dp(rows, v<pll>(cols));
-    v<v<bool> > visited(rows, v<bool>(cols, false));
+    v<v<ll> > dp(rows, v<ll>(cols, -1));
     auto inside = [&](int r, int c) {
         return 0 <= r && r < rows && 0 <= c && c < cols;
     };
-    if (rows == 1 && cols == 1) {
-        cout << 0 << endl;
-        return;
-    }
-    function<pll(int, int)> dfs = [&](int r, int c) {
+
+    function<ll(int, int)> dfs = [&](int r, int c) {
         if (!inside(r, c)) {
-            return mp(0LL, inf);
+            return inf;
         }
-        ll p = ps[r + c];
-        if (r == 0 && c == 0) {
-            return dp[r][c] = mp(coins[0][0] - p, coins[0][0] - p);
-        }
-        if (visited[r][c]) {
+        if (dp[r][c] != -1) {
             return dp[r][c];
         }
-        visited[r][c] = true;
-        auto left = dfs(r - 1, c);
-        auto right = dfs(r, c - 1);
-
-        ll mx = max(left.f, right.f);
-        ll curr = coins[r][c] - p;
-        if (mx >= 0) {
-            curr += mx;
+        ll p = ps[r + c];
+        ll min_req = p - coins[r][c];
+        if (r == rows - 1 && c == cols - 1) {
+            return dp[r][c] = max(0LL, p - coins[r][c]);
         }
-        ll path_min = min({left.s, right.s, curr});
-        return dp[r][c] = mp(curr, path_min);
+        ll left = dfs(r, c + 1);
+        ll right = dfs(r + 1, c);
+        return dp[r][c] = max(0LL, min(left, right) + min_req);
     };
-    cout << abs(dfs(rows - 1, cols - 2).s, dfs(rows - 2, cols - 1)) << endl;
-    debug(dp);
+    cout << dfs(0, 0) << endl;
 }
 
 
