@@ -545,7 +545,6 @@ std::basic_ostream<CharT, Traits>& operator<<(
 }
 }  // namespace atcoder
 
-
 #ifdef LOCAL
 #include "algo/debug.hpp"
 #else
@@ -555,6 +554,7 @@ using namespace std;
 
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
+#define endl "\n"
 #define rep(i,a,b) for (int i=(int)(a);i<(int)(b);i++)
 #define len(x) static_cast<int>((x).size())
 #define mp make_pair
@@ -576,58 +576,31 @@ using vi = vector<int>;
 
 */
 using mint = atcoder::modint1000000007;
+const int MAXN = 1e6 + 5;
+v<v<mint> > dp(MAXN + 1, v<mint>(2, 0));
 
-class Solution {
-public:
-    int xorAfterQueries(vector<int> &nums, vector<vector<int> > &queries) {
-        int n = len(nums);
-        v<mint> final_vals(n);
-        rep(i, 0, n) final_vals[i] = nums[i];
-        map<int, v<mint> > events;
-        const int BLOCK = sqrt(1.0 * n) + 1;
-        for (auto &q: queries) {
-            int l = q[0];
-            int r = q[1];
-            int k = q[2];
-            int val = q[3];
-            if (k >= BLOCK) {
-                for (int i = l; i <= r; i += k) {
-                    final_vals[i] *= val;
-                }
-            } else {
-                if (!events.count(k)) {
-                    events[k] = v<mint>(n + 1, 1);
-                }
-                events[k][l] *= val;
-                int r2 = l + (((r - l) / k) + 1) * k;
-                events[k][min(r2, n)] /= val;
-            }
-        }
-        for (auto &[k, event]: events) {
-            for (int rem = 0; rem < k; rem++) {
-                mint curr = 1;
-                for (int i = rem; i < n; i += k) {
-                    curr = curr * event[i];
-                    final_vals[i] *= curr;
-                }
-            }
-        }
-        int ans = 0;
-        for (auto &val: final_vals) {
-            ans ^= val.val();
-        }
-        return ans;
+void solve() {
+    // dp[i][state] -> num ways to achieve height i, state
+    dp[0][1] = dp[0][0] = 1;
+    for (int i = 1; i <= MAXN; i++) {
+        dp[i][0] = dp[i - 1][1] + 2 * dp[i - 1][0];
+        dp[i][1] = 4 * dp[i - 1][1] + dp[i - 1][0];
     }
-};
-
+    // cout << dp[n - 1][0] + dp[n - 1][1] << endl;
+}
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
-    Solution s;
-    v<int> nums{1, 1, 1};
-    v<v<int> > queries{{0, 2, 1, 4}};
-    debug(s.xorAfterQueries(nums, queries));
+    int T;
+    cin >> T;
+    solve();
+
+    for (int i = 0; i < T; i++) {
+        int n;
+        cin >> n;
+        cout << dp[n - 1][0] + dp[n - 1][1] << endl;
+    }
     return 0;
 }

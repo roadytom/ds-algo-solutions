@@ -40,39 +40,35 @@ ll fast_pow(ll b, ll e) {
     return ans;
 }
 
-ll x_coins[18];
+ll x_coins[19];
 
 void solve() {
     ll n, k;
     cin >> n >> k;
-    ll coins = 0;
-    auto find = [&](ll num) {
-        ll pow = 0;
-        ll val = 1;
-        while (val * 3 <= num) {
-            pow++;
-            val *= 3;
-        }
-        return pow;
-    };
     map<ll, ll> deals;
     ll min_deal_count = 0;
-    while (n > 0) {
-        ll x = find(n);
-        ll tx = fast_pow(3LL, x);
-        n -= tx;
+    ll coins = 0;
+    ll temp_n = n;
+    while (temp_n > 0) {
+        ll x = 0;
+        ll val = 1;
+        while (val * 3 <= temp_n) {
+            val *= 3;
+            x++;
+        }
+        temp_n -= val;
         deals[x]++;
         min_deal_count++;
-
         coins += x_coins[x];
     }
-    if (min_deal_count > k || n != 0) {
+
+    if (min_deal_count > k) {
         cout << -1 << endl;
         return;
     }
     k -= min_deal_count;
     ll available_deals = 0;
-    for (int i = 17; i >= 1; i--) {
+    for (int i = 18; i >= 1; i--) {
         if (deals.count(i)) {
             available_deals += deals[i];
         }
@@ -98,7 +94,7 @@ int main() {
     cin >> T;
     ll val = 1;
     x_coins[0] = 3;
-    for (int i = 1; i < 18; i++) {
+    for (int i = 1; i <= 18; i++) {
         x_coins[i] = val * 3 * 3 + i * val;
         val *= 3;
     }
