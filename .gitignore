@@ -4,6 +4,7 @@ out/
 !**/src/test/**/out/
 !**/src/main/**/target/
 !**/src/test/**/target/
+!python/**
 .idea
 
 ### Eclipse ###
@@ -30,3 +31,15 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+# --- Ignore everything inside C++ ---
+# --- Ignore IDE/build artifacts inside C++ ---
+C++/.idea/
+C++/*.o
+C++/*.obj
+C++/*.out
+C++/*.exe
+C++/a.out
+C++/*.dSYM/
+C++/**/*.dSYM/
+C++/cmake-build-*/

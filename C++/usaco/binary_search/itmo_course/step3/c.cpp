@@ -29,29 +29,34 @@ using vi = vector<int>;
 
 */
 void solve() {
-    int n;
-    cin >> n;
-    v<int> coins(n);
-    rep(i, 0, n) cin >> coins[i];
-    const int MAXN = 1e5 + 5;
-    v<bool> dp(MAXN + 1);
-    dp[0] = true;
-    for (int coin: coins) {
-        for (int x = MAXN; x >= 0; x--) {
-            if (dp[x] && x + coin <= MAXN) {
-                dp[x + coin] = true;
+    int n, k;
+    cin >> n >> k;
+    v<int> coords(n);
+    rep(i, 0, n) cin >> coords[i];
+    auto check = [&](ll dist) {
+        ll window_sum = 0;
+        ll cow = 1;
+        for (int i = 1; i < n; i++) {
+            window_sum += coords[i] - coords[i - 1];
+            if (window_sum >= dist) {
+                window_sum = 0;
+                cow++;
             }
+            if (cow >= k) return true;
+        }
+        return false;
+    };
+    ll left = 0LL, right = 1e18;
+
+    while (left <= right) {
+        ll mid = left + (right - left) / 2;
+        if (check(mid)) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
         }
     }
-    v<int> res;
-    for (int i = 1; i <= MAXN; i++) {
-        if (dp[i]) {
-            res.pb(i);
-        }
-    }
-    cout << len(res) << endl;
-    rep(i, 0, len(res)) cout << res[i] << " ";
-    cout << endl;
+    cout << right << endl;
 }
 
 int main() {

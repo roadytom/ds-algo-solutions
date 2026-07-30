@@ -1,9 +1,28 @@
+#include <atcoder/internal_type_traits.hpp>
 #include <bits/stdc++.h>
 using namespace std;
-
+using namespace atcoder;
+// Macros
 #define ll long long
-#define MOD 1000000007
-#define INF LLONG_MAX
+#define vi vector<int>
+#define vvi vector<vector<int>>
+#define pii std::pair<int, int>
+#define vii std::vector<pii>
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+#define len(x) static_cast<int>((x).size())
+#define str(x) to_string(x)
+#define list vector
+#define dict map
+#define print(x) cout << x << endl;
+#define print10(x) cout << fixed << setprecision(10) << x << endl;
+#define endl "\n"
+
+// Constants
+constexpr ll MOD = 1e9 + 7;
+constexpr ll INF = 1e18;
+constexpr ll MAXN = 2e6 + 5; // for factorial precomputation etc.
+
 
 void solve() {
     ll n, s, x;
@@ -59,6 +78,7 @@ void solve() {
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
+    cout.tie(nullptr);
 
     int T;
     cin >> T;

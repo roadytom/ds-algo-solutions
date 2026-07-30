@@ -5,9 +5,9 @@
 #define debug(...) 42
 #endif
 using namespace std;
+
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
-#define endl "\n"
 #define rep(i,a,b) for (int i=(int)(a);i<(int)(b);i++)
 #define len(x) static_cast<int>((x).size())
 #define mp make_pair
@@ -28,36 +28,33 @@ using vi = vector<int>;
 /**
 
 */
-void solve() {
-    int n;
-    cin >> n;
-    v<int> coins(n);
-    rep(i, 0, n) cin >> coins[i];
-    const int MAXN = 1e5 + 5;
-    v<bool> dp(MAXN + 1);
-    dp[0] = true;
-    for (int coin: coins) {
-        for (int x = MAXN; x >= 0; x--) {
-            if (dp[x] && x + coin <= MAXN) {
-                dp[x + coin] = true;
-            }
-        }
+class Router {
+public:
+    int memory_limit;
+    int id = 0;
+    // timestamp, source, destination
+    map<pair<int, pii>, int> packet_to_id;
+    map<pair<pii, pii>>
+    Router(int memory_limit) {
+        this->memory_limit = memory_limit;
     }
-    v<int> res;
-    for (int i = 1; i <= MAXN; i++) {
-        if (dp[i]) {
-            res.pb(i);
-        }
+
+    bool addPacket(int source, int destination, int timestamp) {
     }
-    cout << len(res) << endl;
-    rep(i, 0, len(res)) cout << res[i] << " ";
-    cout << endl;
-}
+
+    vector<int> forwardPacket() {
+    }
+
+    int getCount(int destination, int start_time, int end_time) {
+    }
+};
+
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
-    solve();
+    Solution s;
+    debug(s.solve());
     return 0;
 }

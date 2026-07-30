@@ -29,29 +29,20 @@ using vi = vector<int>;
 
 */
 void solve() {
-    int n;
-    cin >> n;
-    v<int> coins(n);
-    rep(i, 0, n) cin >> coins[i];
-    const int MAXN = 1e5 + 5;
-    v<bool> dp(MAXN + 1);
-    dp[0] = true;
-    for (int coin: coins) {
-        for (int x = MAXN; x >= 0; x--) {
-            if (dp[x] && x + coin <= MAXN) {
-                dp[x + coin] = true;
-            }
-        }
+    int n, k;
+    cin >> n >> k;
+    set<int> arr;
+    rep(i, 0, n) {
+        int x;
+        cin >> x;
+        arr.insert(x);
     }
-    v<int> res;
-    for (int i = 1; i <= MAXN; i++) {
-        if (dp[i]) {
-            res.pb(i);
-        }
+    rep(i, 0, k) {
+        int num;
+        cin >> num;
+        if (arr.count(num)) cout << "YES" << endl;
+        else cout << "NO" << endl;
     }
-    cout << len(res) << endl;
-    rep(i, 0, len(res)) cout << res[i] << " ";
-    cout << endl;
 }
 
 int main() {

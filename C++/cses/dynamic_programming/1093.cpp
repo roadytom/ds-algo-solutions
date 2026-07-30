@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <atcoder/modint>
 #ifdef LOCAL
 #include "algo/debug.hpp"
 #else
@@ -28,30 +29,29 @@ using vi = vector<int>;
 /**
 
 */
+using mint = atcoder::modint1000000007;
+
 void solve() {
+    // dp[first_set_sum][idx] -> number of ways to achieve first_set_sum for the num 0..idx, decide for idx
+    // dp[0][0] = 1;
     int n;
     cin >> n;
-    v<int> coins(n);
-    rep(i, 0, n) cin >> coins[i];
-    const int MAXN = 1e5 + 5;
-    v<bool> dp(MAXN + 1);
-    dp[0] = true;
-    for (int coin: coins) {
-        for (int x = MAXN; x >= 0; x--) {
-            if (dp[x] && x + coin <= MAXN) {
-                dp[x + coin] = true;
-            }
+    int max_sum = (1 + n) * n / 2;
+    if (max_sum % 2 != 0) {
+        cout << 0 << endl;
+        return;
+    }
+    max_sum /= 2;
+    debug(max_sum);
+    v<mint> dp(max_sum + 1);
+    dp[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        for (int sum = max_sum - i; sum >= 0; sum--) {
+            dp[sum + i] += dp[sum];
         }
     }
-    v<int> res;
-    for (int i = 1; i <= MAXN; i++) {
-        if (dp[i]) {
-            res.pb(i);
-        }
-    }
-    cout << len(res) << endl;
-    rep(i, 0, len(res)) cout << res[i] << " ";
-    cout << endl;
+    cout << dp[max_sum] / 2 << endl;
+    debug(dp);
 }
 
 int main() {

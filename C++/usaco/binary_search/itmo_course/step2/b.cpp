@@ -28,30 +28,33 @@ using vi = vector<int>;
 /**
 
 */
+const double error = 1e-7;
+
 void solve() {
-    int n;
-    cin >> n;
-    v<int> coins(n);
-    rep(i, 0, n) cin >> coins[i];
-    const int MAXN = 1e5 + 5;
-    v<bool> dp(MAXN + 1);
-    dp[0] = true;
-    for (int coin: coins) {
-        for (int x = MAXN; x >= 0; x--) {
-            if (dp[x] && x + coin <= MAXN) {
-                dp[x + coin] = true;
-            }
+    int n, k;
+    cin >> n >> k;
+    v<int> arr(n);
+    rep(i, 0, n) cin >> arr[i];
+    double left = 0, right = 1e10 + 10;
+    auto check = [&](double len) {
+        ll cnt = 0;
+        for (auto num: arr) {
+            cnt += (int) (1.0 * num / len);
+            if (cnt >= k) return true;
+        }
+        return false;
+    };
+    // while (right - left > error) {
+    for (int i = 0; i < 100; i++) {
+        double mid = left + (right - left) / 2;
+        if (check(mid)) {
+            left = mid;
+        } else {
+            right = mid;
         }
     }
-    v<int> res;
-    for (int i = 1; i <= MAXN; i++) {
-        if (dp[i]) {
-            res.pb(i);
-        }
-    }
-    cout << len(res) << endl;
-    rep(i, 0, len(res)) cout << res[i] << " ";
-    cout << endl;
+    cout << fixed << setprecision(10) << endl;
+    cout << right << endl;
 }
 
 int main() {

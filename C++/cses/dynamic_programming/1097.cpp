@@ -28,30 +28,30 @@ using vi = vector<int>;
 /**
 
 */
+const ll INF = LLONG_MAX / 2;
+
 void solve() {
     int n;
     cin >> n;
-    v<int> coins(n);
-    rep(i, 0, n) cin >> coins[i];
-    const int MAXN = 1e5 + 5;
-    v<bool> dp(MAXN + 1);
-    dp[0] = true;
-    for (int coin: coins) {
-        for (int x = MAXN; x >= 0; x--) {
-            if (dp[x] && x + coin <= MAXN) {
-                dp[x + coin] = true;
-            }
+    v<ll> arr(n);
+    rep(i, 0, n) cin >> arr[i];
+    auto def = mp(-INF, -INF);
+    v<v<pll> > memo(n, v<pll>(n, def));
+    v<ll> prefix_sum(n + 1);
+    partial_sum(all(arr), prefix_sum.begin() + 1);
+    function<pll(int, int)> dp = [&](int l, int r) {
+        if (l == r) {
+            return mp(arr[l], 0LL);
         }
-    }
-    v<int> res;
-    for (int i = 1; i <= MAXN; i++) {
-        if (dp[i]) {
-            res.pb(i);
+        if (memo[l][r] != def) {
+            return memo[l][r];
         }
-    }
-    cout << len(res) << endl;
-    rep(i, 0, len(res)) cout << res[i] << " ";
-    cout << endl;
+        ll me = max(arr[l] + dp(l + 1, r).s, arr[r] + dp(l, r - 1).s);
+        ll he = prefix_sum[r + 1] - prefix_sum[l] - me;
+        return memo[l][r] = {me, he};
+    };
+    ll res = dp(0, n - 1).f;
+    cout << res << endl;
 }
 
 int main() {

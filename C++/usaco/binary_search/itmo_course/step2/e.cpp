@@ -26,32 +26,25 @@ using pli = pair<ll, int>;
 using pll = pair<ll, ll>;
 using vi = vector<int>;
 /**
-
+https://codeforces.com/edu/course/2/lesson/6/2/practice/contest/283932/problem/E
 */
 void solve() {
-    int n;
-    cin >> n;
-    v<int> coins(n);
-    rep(i, 0, n) cin >> coins[i];
-    const int MAXN = 1e5 + 5;
-    v<bool> dp(MAXN + 1);
-    dp[0] = true;
-    for (int coin: coins) {
-        for (int x = MAXN; x >= 0; x--) {
-            if (dp[x] && x + coin <= MAXN) {
-                dp[x + coin] = true;
-            }
+    double c;
+    cin >> c;
+    auto greater = [&](double x) {
+        return x * x + sqrt(x) >= c;
+    };
+    double lo = 0.0, hi = 1e8 + 5;
+
+    for (int i = 0; i < 100; i++) {
+        double mid = lo + (hi - lo) / 2;
+        if (greater(mid)) {
+            hi = mid;
+        } else {
+            lo = mid;
         }
     }
-    v<int> res;
-    for (int i = 1; i <= MAXN; i++) {
-        if (dp[i]) {
-            res.pb(i);
-        }
-    }
-    cout << len(res) << endl;
-    rep(i, 0, len(res)) cout << res[i] << " ";
-    cout << endl;
+    cout << fixed << setprecision(20) << lo << endl;
 }
 
 int main() {

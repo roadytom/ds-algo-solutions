@@ -28,30 +28,35 @@ using vi = vector<int>;
 /**
 
 */
+const double INF = 1e9 + (2e10 + 5) * 1e9;
+
 void solve() {
     int n;
     cin >> n;
-    v<int> coins(n);
-    rep(i, 0, n) cin >> coins[i];
-    const int MAXN = 1e5 + 5;
-    v<bool> dp(MAXN + 1);
-    dp[0] = true;
-    for (int coin: coins) {
-        for (int x = MAXN; x >= 0; x--) {
-            if (dp[x] && x + coin <= MAXN) {
-                dp[x + coin] = true;
-            }
+    v<double> x(n), ve(n);
+    rep(i, 0, n) cin >> x[i] >> ve[i];
+    auto check = [&](double t) {
+        double left = 1.0 * x[0] - t * ve[0];
+        double right = 1.0 * x[0] + t * ve[0];
+        debug(left, right);
+        for (int i = 1; i < n; i++) {
+            left = max(left, 1.0 * x[i] - t * ve[i]);
+            right = min(right, 1.0 * x[i] + t * ve[i]);
+        }
+        // debug(left, right);
+        return left <= right;
+    };
+    double left = 0.0, right = 2e10 + 5;
+    for (int i = 0; i < 1000; i++) {
+        double mid = left + (right - left) / 2;
+        debug(mid);
+        if (check(mid)) {
+            right = mid;
+        } else {
+            left = mid;
         }
     }
-    v<int> res;
-    for (int i = 1; i <= MAXN; i++) {
-        if (dp[i]) {
-            res.pb(i);
-        }
-    }
-    cout << len(res) << endl;
-    rep(i, 0, len(res)) cout << res[i] << " ";
-    cout << endl;
+    cout << fixed << setprecision(20) << left << endl;
 }
 
 int main() {
