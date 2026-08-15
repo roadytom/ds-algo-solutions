@@ -37,7 +37,7 @@ public:
                 int new_i = i + dr[0];
                 int new_j = j + dr[1];
                 if (is_outside(new_i, new_j)) continue;
-                if (heights[i][j] >= heights[new_i][new_j]) {
+                if (heights[i][j] <= heights[new_i][new_j]) {
                     self(new_i, new_j, idx);
                 }
             }
@@ -48,7 +48,7 @@ public:
         for (int i = 0; i < r; i++) {
             dfs(i, 0, 0);
         }
-        visited = vector<vector<bool> >(r, vector<bool>(c, false));
+        visited.assign(r, vector<bool>(c, false));
         for (int j = 0; j < c; j++) {
             dfs(r - 1, j, 1);
         }
@@ -75,12 +75,11 @@ int main() {
 
     Solution sol;
     vector<vector<int> > grid = {
-        {1, 2, 2, 3, 5}, {3, 2, 3, 4, 4}, {2, 4, 5, 3, 1}, {
-            6, 7, 1, 4, 5
-        },
-        {
-            5, 1, 1, 2, 4
-        }
+        {1, 2, 2, 3, 5},
+        {3, 2, 3, 4, 4},
+        {2, 4, 5, 3, 1},
+        {6, 7, 1, 4, 5},
+        {5, 1, 1, 2, 4}
     };
     debug(sol.pacificAtlantic(grid));
     // vector<int> temp{1, 2};
