@@ -129,7 +129,7 @@ auto make_vector(size_t size, Args... args) {
 }
 
 /** END OF CREATION MULTI-D VECTOR **/
-int n;
+initializer_list<int> n;
 vector<vector<int> > tree;
 vector<int> arr;
 
