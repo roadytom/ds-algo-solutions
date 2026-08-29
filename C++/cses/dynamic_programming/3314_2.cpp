@@ -32,7 +32,7 @@ void upd(int nd, int l, int r, int p, int v) {
 int qry(int nd, int l, int r, int ql, int qr) {
     if (ql > qr || qr < l || r < ql) return 0; // empty / disjoint
     if (ql <= l && r <= qr) return seg[nd];
-    int m = (l + r) >> 1;
+    int m = (l + r) >> 1; 
     return max(qry(nd << 1, l, m, ql, qr),
                qry(nd << 1 | 1, m + 1, r, ql, qr));
 }
